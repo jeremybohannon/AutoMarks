@@ -1,28 +1,38 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <hello-world/>
-  </div>
+  <vue-transmit 
+    v-bind="options" 
+    @sucess="success" 
+    @error="error" 
+    @added-file="add" 
+    ref="uploader"
+  >
+    <h1>Click or Drag</h1>
+  </vue-transmit>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
-
 export default {
   name: 'app',
-  components: {
-    HelloWorld
+  data: () => ({
+    options: {
+      url: './upload.php',
+      clickable: true
+    }
+  }),
+  methods: {
+    add(file) {
+      console.log(file.name)
+    },
+    error(file, message) {
+      console.log(message)
+    },
+    success() {
+      console.log('success')
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>

@@ -1,7 +1,7 @@
 <template>
   <vue-transmit 
     v-bind="options" 
-    @sucess="success" 
+    @success="success" 
     @error="error" 
     @added-file="add" 
     ref="uploader"
@@ -15,7 +15,7 @@ export default {
   name: 'app',
   data: () => ({
     options: {
-      url: './upload.php',
+      url: '//localhost:3000/',
       clickable: true
     }
   }),

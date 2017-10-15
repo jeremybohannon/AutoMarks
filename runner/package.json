@@ -13,6 +13,9 @@
     "typescript": "^2.5.3"
   },
   "dependencies": {
-    "koa": "^2.3.0"
+    "@koa/cors": "^2.2.1",
+    "koa": "^2.3.0",
+    "koa-body": "^2.5.0",
+    "stream-to-string": "^1.1.0"
   }
 }

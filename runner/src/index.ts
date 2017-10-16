@@ -1,23 +1,26 @@
 import * as Koa from 'koa';
+import * as body from 'koa-body'
 import * as cors from '@koa/cors'
-import * as koaBody from 'koa-body'
-import * as fs from 'fs'
-import * as streamToString from 'stream-to-string'
 
-const app = new Koa();
+import readFiles from './read-files'
+import isPost from './is-post'
+
+const app = new Koa()
+
+declare module 'koa' {
+  interface Context {
+    files: { [key: string]: string }
+  }
+}
 
 app.use(cors())
-app.use(koaBody({ multipart: true }))
+app.use(body({ multipart: true }))
 
-app.use(async ctx => {
-  if ('POST' != ctx.method) return
-  try {
-    const file = ctx.request.body.files.file
-    const out = await streamToString(fs.createReadStream(file.path))
-    console.log(out)
-  } catch (error) {
-    console.log(error)
-  }
-});
+app.use(isPost())
+app.use(readFiles('code', 'test'))
 
-app.listen(3000);
+app.use(ctx => {
+  console.log(ctx.files)
+})
+
+app.listen(3000)

@@ -14,7 +14,11 @@ export default function(...files: string[]) {
       ctx.body = 'Bad request – missing the following files:\n' + missing.join('\n')
     } else {
       // continue to next middleware
+<<<<<<< HEAD
       await next()
+=======
+      next()
+>>>>>>> 31624f99d89084b11f87cb6704444e468543bcf6
     }
 
   }

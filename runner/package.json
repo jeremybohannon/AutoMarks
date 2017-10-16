@@ -6,17 +6,22 @@
     "start": "nodemon --exec ts-node -- src/index.ts"
   },
   "devDependencies": {
+    "@types/dockerode": "^2.5.1",
+    "@types/fs-extra": "^4.0.2",
     "@types/koa": "^2.0.39",
     "@types/node": "^8.0.34",
+    "@types/uuid": "^3.4.2",
     "nodemon": "^1.12.1",
     "ts-node": "^3.3.0",
     "typescript": "^2.5.3"
   },
   "dependencies": {
     "@koa/cors": "^2.2.1",
-    "execa": "^0.8.0",
+    "dockerode": "^2.5.2",
+    "fs-extra": "^4.0.2",
     "koa": "^2.3.0",
     "koa-body": "^2.5.0",
-    "stream-to-string": "^1.1.0"
+    "stream-to-string": "^1.1.0",
+    "uuid": "^3.1.0"
   }
 }

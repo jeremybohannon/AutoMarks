@@ -1,12 +1,13 @@
 import * as Koa from 'koa';
 import * as body from 'koa-body'
 import * as cors from '@koa/cors'
-import * as execa from 'execa'
 
-import isPost from './middleware/is-post'
 import hasFiles from './middleware/has-files'
+import isPost from './middleware/is-post'
+import ok from './middleware/ok'
 
 import getFileContents from './lib/get-file-contents'
+import runTests from './lib/run-tests'
 
 const app = new Koa()
 
@@ -17,10 +18,12 @@ app.use(body({ multipart: true }))
 
 app.use(isPost())
 app.use(hasFiles(...files))
+app.use(ok())
 
-app.use(async (ctx: Koa.Context) => {
+app.use(async (ctx: Koa.Context, next) => {
   const contents = await getFileContents(files, ctx)
- 
+  const resultsXML = runTests(contents.test, contents.source)
+  console.log(resultsXML)
 })
 
-app.listen(3000)
+app.listen(3000) 

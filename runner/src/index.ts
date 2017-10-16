@@ -22,6 +22,7 @@ app.use(ok())
 
 app.use(async (ctx: Koa.Context) => {
   const contents = await getFileContents(files, ctx)
+  ctx.set('Content-Type', 'application/xml')
   ctx.body = await runTests(contents.test, contents.source)
 })
 

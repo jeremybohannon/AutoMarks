@@ -20,10 +20,9 @@ app.use(isPost())
 app.use(hasFiles(...files))
 app.use(ok())
 
-app.use(async (ctx: Koa.Context, next) => {
+app.use(async (ctx: Koa.Context) => {
   const contents = await getFileContents(files, ctx)
-  const resultsXML = runTests(contents.test, contents.source)
-  console.log(resultsXML)
+  ctx.body = await runTests(contents.test, contents.source)
 })
 
 app.listen(3000) 

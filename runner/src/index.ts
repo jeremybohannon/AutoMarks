@@ -9,7 +9,7 @@ app.use(cors())
 app.use(body({ multipart: true }))
 
 const autoMarks = new AutoMarks({
-  containerUpTimeLimit: 1000 * 1,
+  containerUpTimeLimit: 1000 * 15,
   containerStopTimeLimit: 1000 * 5
 })
 

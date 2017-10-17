@@ -19,6 +19,7 @@
   "dependencies": {
     "@koa/cors": "^2.2.1",
     "class-autobind": "^0.1.4",
+    "delay": "^2.0.0",
     "dockerode": "^2.5.2",
     "fs-extra": "^4.0.2",
     "koa": "^2.3.0",

@@ -6,9 +6,13 @@ import * as Koa from 'koa'
 import * as os from 'os'
 import * as streamToString from 'stream-to-string'
 import * as uuid from 'uuid'
+import * as delay from 'delay'
 import autobind from 'class-autobind'
 
-interface Config {}
+interface Config {
+  containerUpTimeLimit: number
+  containerStopTimeLimit: number
+}
 
 interface Context extends Koa.Context {
   state: {
@@ -21,7 +25,7 @@ interface Context extends Koa.Context {
 export default class AutoMarks {
   private docker: Docker
 
-  constructor(private config: Config = {}) {
+  constructor(private config: Config) {
     this.docker = new Docker()
     autobind(this)
   }
@@ -59,14 +63,26 @@ export default class AutoMarks {
 
   public async executeSpecs(ctx: Context, next: Function) {
     // spin up container to run specs
-    await ctx.state.container.start();
-    await ctx.state.container.stop()
+    await Promise.race([
+      ctx.state.container.start(), 
+      delay(this.config.containerUpTimeLimit)
+    ])
+    await ctx.state.container.stop({ 
+      StopGracePeriod: this.config.containerStopTimeLimit
+    })
     // get results from output file
-    ctx.body = await fs.readFile(
+    const results = await fs.readFile(
       resolve(ctx.state.workDir, ctx.state.resultsFile)
     )
-    // set content type of results
-    ctx.set('Content-Type', 'application/xml')
+    // set results back
+    if (results.length === 0) {
+      // send UNPROCESSABLE
+      ctx.status = 422
+    } else {
+      // set content type of results
+      ctx.body = results
+      ctx.set('Content-Type', 'application/xml')
+    }
     // continue middleware
     return next()
   }
@@ -89,7 +105,7 @@ export default class AutoMarks {
 
   public success(ctx: Context, next: Function) {
     // set OK status
-    ctx.status = 200
+    ctx.status = ctx.status === 404 ? 200 : ctx.status
     // continue to next middleware
     return next()
   }

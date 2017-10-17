@@ -8,7 +8,10 @@ const app = new Koa()
 app.use(cors())
 app.use(body({ multipart: true }))
 
-const autoMarks = new AutoMarks({})
+const autoMarks = new AutoMarks({
+  containerUpTimeLimit: 1000 * 1,
+  containerStopTimeLimit: 1000 * 5
+})
 
 app.use(autoMarks.validateMethod)
 app.use(autoMarks.validateRequest)

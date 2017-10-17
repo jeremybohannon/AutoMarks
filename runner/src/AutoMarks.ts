@@ -34,7 +34,7 @@ export default class AutoMarks {
     // create container and results file
     ctx.state.resultsFile = `${uuid.v4()}.xml`
     ctx.state.container = await this.docker.createContainer({
-      Image: 'automarks:latest',
+      Image: 'automarks/runner-rspec:latest',
       WorkingDir: '/automarks',
       Cmd: [
         'rspec', '_.spec.rb', 

@@ -87,6 +87,7 @@ export default {
     margin-top: 25px;
     margin-bottom: 25px;
     width: 90%;
+    max-width: 1000px;
     padding: 15px 15px;
     background: #FFF;
     border: 1px solid #C7CDD1;
@@ -112,6 +113,7 @@ export default {
 .syntaxError {
     height: 50px;
     width: 90%;
+    max-width: 1000px;
     background: rgba(255, 13, 13, 0.38);
     border-radius: 10px 10px;
     border: 2px solid red;

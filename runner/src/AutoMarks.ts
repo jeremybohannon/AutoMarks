@@ -7,6 +7,7 @@ import * as os from 'os'
 import * as streamToString from 'stream-to-string'
 import * as uuid from 'uuid'
 import * as delay from 'delay'
+import * as parse from 'xml-parser'
 import autobind from 'class-autobind'
 
 interface Config {
@@ -18,6 +19,7 @@ interface Context extends Koa.Context {
   state: {
     workDir?: string
     resultsFile?: string
+    resultsXML?: string
     container?: Docker.Container
   }
 }
@@ -79,9 +81,8 @@ export default class AutoMarks {
       // send UNPROCESSABLE
       ctx.status = 422
     } else {
-      // set content type of results
-      ctx.body = results
-      ctx.set('Content-Type', 'application/xml')
+      // save XML to context
+      ctx.state.resultsXML = results.toString()
     }
     // continue middleware
     return next()
@@ -101,6 +102,22 @@ export default class AutoMarks {
     ])
     // continue to next middleware
     return next()
+  }
+
+  public parseResults(ctx: Context, next: Function) {
+    const parsed = parse(ctx.state.resultsXML)
+    const results = parsed.root.children
+      .filter(child => child.name === 'testcase')
+      .map(testcase => ({
+        case: testcase.attributes.name,
+        pass: testcase.children.length === 0
+      }))
+    
+    ctx.response.body = {
+      assignment: ctx.request.body.fields.assignment,
+      user: ctx.request.body.fields.user,
+      results
+    }
   }
 
   public success(ctx: Context, next: Function) {

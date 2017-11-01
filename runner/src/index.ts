@@ -19,6 +19,7 @@ app.use(autoMarks.createWorkDir)
 app.use(autoMarks.saveFileContents)
 app.use(autoMarks.createContainer)
 app.use(autoMarks.executeSpecs)
+app.use(autoMarks.parseResults)
 app.use(autoMarks.success)
 
-app.listen(3000) 
+app.listen(3000)

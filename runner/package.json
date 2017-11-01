@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "start": "nodemon --exec ts-node -- src/index.ts"
+    "start": "nodemon --exec ts-node -- src/index.ts",
+    "postinstall": "docker pull automarks/runner-rspec:latest"
   },
   "devDependencies": {
     "@types/dockerode": "^2.5.1",

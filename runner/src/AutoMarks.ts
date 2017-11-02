@@ -1,13 +1,10 @@
-import { resolve } from 'path'
+import { PassThrough } from 'stream'
 import * as body from 'koa-body'
 import * as Docker from 'dockerode'
 import * as fs from 'fs-extra'
 import * as Koa from 'koa'
-import * as os from 'os'
-import * as streamToString from 'stream-to-string'
-import * as uuid from 'uuid'
-import * as delay from 'delay'
 import * as parse from 'xml-parser'
+import * as streamToString from 'stream-to-string'
 import autobind from 'class-autobind'
 
 interface Config {
@@ -17,10 +14,10 @@ interface Config {
 
 interface Context extends Koa.Context {
   state: {
-    workDir?: string
-    resultsFile?: string
-    resultsXML?: string
     container?: Docker.Container
+    spec?: string
+    source?: string
+    resultsXML?: string
   }
 }
 
@@ -32,92 +29,48 @@ export default class AutoMarks {
     autobind(this)
   }
 
-  public async createContainer(ctx: Context, next: Function) {
-    // create container and results file
-    ctx.state.resultsFile = `${uuid.v4()}.xml`
-    ctx.state.container = await this.docker.createContainer({
-      Image: 'automarks/runner-rspec:latest',
-      WorkingDir: '/automarks',
-      Cmd: [
-        'rspec', '_.spec.rb', 
-        '-f', 'RspecJunitFormatter', '-o', ctx.state.resultsFile
-      ],
-      HostConfig: { Binds: [`${ctx.state.workDir}:/automarks`] }
-    })
-    // continue to next middleware
-    await next()
-    // destory container
-    await ctx.state.container.remove()
-  }
-
-  public async createWorkDir(ctx: Context, next: Function) {
-    // get valid tmp path
-    const path = resolve(os.tmpdir(), uuid.v4())
-    // create tmp directory
-    await fs.mkdirp(path)
-    // resolve to non-symlink path and save
-    ctx.state.workDir = await fs.realpath(path)
-    // proceed with middleware
-    await next()
-    // clean up
-    await fs.remove(ctx.state.workDir)
-  }
-
-  public async executeSpecs(ctx: Context, next: Function) {
-    // spin up container to run specs
-    await Promise.race([
-      ctx.state.container.start(), 
-      delay(this.config.containerUpTimeLimit)
-    ])
-    await ctx.state.container.stop({ 
-      StopGracePeriod: this.config.containerStopTimeLimit
-    })
-    // get results from output file
-    const results = await fs.readFile(
-      resolve(ctx.state.workDir, ctx.state.resultsFile)
+  public async execute(ctx: Context, next: Function) {
+    const stream = new PassThrough()
+    // run files in docker using rspec
+    await this.docker.run(
+      'automarks_grader_container', 
+      ['RUBY', ctx.state.spec, ctx.state.source], 
+      stream
     )
-    // set results back
-    if (results.length === 0) {
-      // send UNPROCESSABLE
-      ctx.status = 422
-    } else {
-      // save XML to context
-      ctx.state.resultsXML = results.toString()
-    }
-    // continue middleware
-    return next()
+    ctx.state.resultsXML = await streamToString(stream);
+    // continue to next middleware
+    await next()
   }
 
-  public async saveFileContents(ctx: Context, next: Function) {
-    // wait for all files to finish
-    await Promise.all([
-      fs.copy(
-        ctx.request.body.files.source.path,
-        resolve(ctx.state.workDir, '_.rb')
-      ),
-      fs.copy(
-        ctx.request.body.files.spec.path,
-        resolve(ctx.state.workDir, '_.spec.rb')
-      )
-    ])
-    // continue to next middleware
-    return next()
+  public async parseInputs(ctx: Context, next: Function) {
+    // wait for both files to be read in
+    await Promise.all(['spec', 'source'].map(async filename => {
+      // read file into base64 string for transfer to container
+      ctx.state[filename] = Buffer.from(
+        await fs.readFile(ctx.request.body.files[filename].path)
+      ).toString('base64')
+    }))
+    // next middleware
+    await next()
   }
 
   public parseResults(ctx: Context, next: Function) {
-    const parsed = parse(ctx.state.resultsXML)
-    const results = parsed.root.children
+    const parsedXML = parse(ctx.state.resultsXML)
+    // turn Junit format into usable JSON
+    const results = parsedXML.root.children
       .filter(child => child.name === 'testcase')
       .map(testcase => ({
         case: testcase.attributes.name,
         pass: testcase.children.length === 0
       }))
-    
+    // return results to the client
     ctx.response.body = {
       assignment: ctx.request.body.fields.assignment,
       user: ctx.request.body.fields.user,
       results
     }
+    // next middleware
+    return next()
   }
 
   public success(ctx: Context, next: Function) {

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "nodemon --exec ts-node -- src/index.ts",
-    "postinstall": "docker pull automarks/runner-rspec:latest"
+    "postinstall": "docker build --tag automarks_grader_container -f container/Dockerfile container"
   },
   "devDependencies": {
     "@types/dockerode": "^2.5.1",
@@ -21,13 +21,11 @@
   "dependencies": {
     "@koa/cors": "^2.2.1",
     "class-autobind": "^0.1.4",
-    "delay": "^2.0.0",
     "dockerode": "^2.5.2",
     "fs-extra": "^4.0.2",
     "koa": "^2.3.0",
     "koa-body": "^2.5.0",
     "stream-to-string": "^1.1.0",
-    "uuid": "^3.1.0",
     "xml-parser": "^1.2.1"
   }
 }

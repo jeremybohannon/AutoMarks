@@ -15,10 +15,8 @@ const autoMarks = new AutoMarks({
 
 app.use(autoMarks.validateMethod)
 app.use(autoMarks.validateRequest)
-app.use(autoMarks.createWorkDir)
-app.use(autoMarks.saveFileContents)
-app.use(autoMarks.createContainer)
-app.use(autoMarks.executeSpecs)
+app.use(autoMarks.parseInputs)
+app.use(autoMarks.execute)
 app.use(autoMarks.parseResults)
 app.use(autoMarks.success)
 

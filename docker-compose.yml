@@ -1,9 +1,14 @@
 version: '3'
 services:
-  runner:
+  grader:
+    # image: docker
     build: ./runner
     privileged: true
     volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
-    - "3000:3000"
+      - "3000:3000"
+    tmpfs: /tmp
+
+volumes:
+  example:

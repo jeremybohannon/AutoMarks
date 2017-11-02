@@ -26,8 +26,18 @@ name: 'uploadfile',
       console.log(file.name)
     },
     error(file, message) {
-      //Emit event 
-      this.syntaxError = true;
+      this.$parent.$emit('error', true);
+      
+      fetch(`http://localhost:5000/src/results.json?id=1`, {
+        method: 'get'
+      }).then(response => {
+        return response.json()
+      }).then(json => {
+        this.$parent.$emit('results', json)
+      }).catch(err => {
+        console.log(err)
+      });
+
       console.log(message)
     },
     success() {

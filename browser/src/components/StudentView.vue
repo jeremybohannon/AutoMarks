@@ -1,9 +1,11 @@
 <template>
   <div class="student-view-wrapper">
-    <upload-file :assignmentName="assignment.name"/>
     <div class="block assignmentDescription">
         <span>{{ assignment.description }}</span>
     </div>
+    
+    <upload-file :assignmentName="assignment.name"/>
+    
     <div v-if="syntaxError" class="syntaxError">
         <span>{{ error }}</span>
     </div>
@@ -11,11 +13,13 @@
         <ul class="testCasesList">
             <li v-for="testCase in assignment.testCases">
                 <div class="needsAName">
-                    <i v-if="testCase.status == 'Pass'" class="fa fa-check-circle" aria-hidden="true"></i>
-                    <i v-if="testCase.status == 'Failed'" class="fa fa-times-circle" aria-hidden="true"></i>
+                    <!-- <i v-if="testCase.pass" class="fa fa-clock-o" aria-hidden="true"></i> -->
+                    <i v-if="testCase.pass" class="fa fa-check-circle" aria-hidden="true"></i>
+                    <i v-if="!testCase.pass" class="fa fa-times-circle" aria-hidden="true"></i>
                     <p>{{ testCase.name }}</p>
                 </div>
-                <p>{{ testCase.status }}</p>
+                <p v-if="testCase.pass">Passed</p>
+                <p v-if="!testCase.pass">Failed</p>
             </li>
         </ul>
     </div>
@@ -29,14 +33,23 @@ export default {
   data: () => {
     return {
         error: "Syntax Error",
-        syntaxError: true,
+        syntaxError: false,
     }
-  },
-  props: ['assignment'],
+  }, 
+  props: ['assignment', 'setAssignment'],
   components: {
       'upload-file': UploadFile
+  },
+  mounted(){
+    this.$on('error', function(value){
+        this.syntaxError = value
+    });
+    this.$on('results', function(value){
+        this.setAssignment(value)
+    });
   }
 }
+
 </script>
 
 <style scoped>
@@ -72,6 +85,13 @@ export default {
 
 .testCases .fa-times-circle {
     color: #EE0612;
+}
+
+.testCases .fa-clock-o{
+    color: #333;
+}
+.testCases .fa-circle{
+    color: #f5f5f5;
 }
 
 .needsAName {
@@ -118,6 +138,14 @@ export default {
     border-radius: 10px 10px;
     border: 2px solid red;
     text-align: center;
+}
+
+.title {
+    text-align: center;
+    font-size: 1.8em;
+    color: grey;
+    font-weight: 100;
+    font-family: helvetica;
 }
 
 .syntaxError span {

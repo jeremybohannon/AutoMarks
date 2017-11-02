@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "serve": "^6.4.0",
     "vue": "^2.4.2",
     "vue-transmit": "^6.0.7"
   },

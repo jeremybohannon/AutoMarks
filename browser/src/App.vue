@@ -1,6 +1,6 @@
 <template>
 <div id="wrapper">
-  <student-view :assignment = "assignment"/>
+  <student-view v-if="!loading" :assignment = "assignment" :setAssignment="setAssignment"/>
   </div>
 </div>
 </template>
@@ -12,21 +12,42 @@ export default {
   name: 'app',
   data: () => {
     return {
-      assignment: {
-        name: "Assignment #1",
-        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-        testCases: [
-              { name: 'Test Case #1', status: 'Pass' },
-              { name: 'Test Case #2', status: 'Failed' },
-              { name: 'Test Case #3', status: 'Failed' },
-              { name: 'Test Case #4', status: 'Pass' },
-              { name: 'Test Case #5', status: 'Pass' },
-              { name: 'Test Case #6', status: 'Failed' },
-              { name: 'Test Case #7', status: 'Pass' },
-              { name: 'Test Case #8', status: 'Failed' }
-        ]
-      }
+      loading: true,
+      assignment: {}
     }
+  },
+  mounted(){
+    function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    const id = getParameterByName('id')
+    const user = getParameterByName('user')
+
+    fetch(`http://localhost:5000/src/assignment.json?id=${id}`, {
+        method: 'get'
+      }).then(response => {
+        return response.json()
+      }).then(json => {
+        this.assignment = json
+        this.loading = false
+      }).catch(err => {
+        console.log(err)
+      });
+  },
+  methods: {
+    setAssignment(cases) {
+      console.log(cases)
+
+      this.assignment.testCases = cases
+      
+    },
   },
   components: {
       'student-view': StudentView,
@@ -46,6 +67,5 @@ export default {
     width: 100%;
     background: #f5f5f5;
     border: 1px solid #C7CDD1;
-    border-top: none;
   }
 </style>

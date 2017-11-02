@@ -1,4 +1,4 @@
-package com.automarks.gateway.gatewayService;
+package com.automarks.Assignment.Assignment;
 
 import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.springframework.boot.CommandLineRunner;
@@ -9,12 +9,12 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class GatewayServiceApplication {
+public class AssignmentApplication {
 
 	private int maxUploadSizeInMb = 10 * 1024 * 1024;
 
 	public static void main(String[] args) {
-		SpringApplication.run(GatewayServiceApplication.class, args);
+		SpringApplication.run(AssignmentApplication.class, args);
 	}
 
 	@Bean

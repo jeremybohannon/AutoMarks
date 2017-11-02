@@ -1,4 +1,4 @@
-package com.automarks.storage.storageService;
+package com.automarks.Assignment.Assignment;
 
 public class Case {
     int id;

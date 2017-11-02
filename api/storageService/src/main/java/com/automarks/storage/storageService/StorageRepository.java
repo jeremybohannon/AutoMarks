@@ -15,5 +15,5 @@ public interface StorageRepository extends MongoRepository<Assignment,String>{
     @Override
     List<Assignment> findAll(Sort sort);
 
-    List<Assignment> findById(int id);
+    List<Assignment> findById(long id);
 }

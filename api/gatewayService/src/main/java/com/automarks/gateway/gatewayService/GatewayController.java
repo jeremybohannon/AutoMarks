@@ -3,35 +3,91 @@ package com.automarks.gateway.gatewayService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/v1")
 public class GatewayController {
 
+    private final StorageService storageService;
     final ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(value = "assignment/{id}", method = RequestMethod.GET)
+    @Autowired
+    public GatewayController(StorageService storageService) {
+        this.storageService = storageService;
+    }
+
+    @RequestMapping(value = "/assignment/{id}", method = RequestMethod.GET, produces = "application/json")
     public String getAssignment(@PathVariable long id){
-        return getMethod("http://localhost:8080/storage/assignment/" + id, 120);
+        return getMethod("http://localhost:8060/assignment/" + id, 120);
     }
 
-    @RequestMapping(value = "assignment/{id}/submit", method = RequestMethod.GET)
-    public String submitAssignment(@PathVariable long id){
-        return "[ {\"id\" : 1, \"pass\" : true}, {\"id\" : 2, \"pass\" : false} ]";
-    }
+    @RequestMapping(value = "/assignment/{id}/submission/{userId}", method = RequestMethod.POST, produces = "application/json")
+    public String submitAssignment(@PathVariable long id, @PathVariable long userId, @RequestParam("file") MultipartFile file){
+//        receives file and user information
+        String responseString = "";
+        try {
 
+            storageService.store(file);
+            File source = storageService.getFile(file.getOriginalFilename());
+
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost request = new HttpPost("http://localhost:8060/assignment/"+id+"/submission/"+userId);
+
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.addBinaryBody("source", new FileInputStream(source),
+                    ContentType.APPLICATION_OCTET_STREAM, file.getOriginalFilename());
+
+            HttpEntity multipart = builder.build();
+            request.setEntity(multipart);
+
+            CloseableHttpResponse response = client.execute(request);
+
+            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+
+            client.close();
+            responseString = result.toString();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return responseString;
+    }
 
     private String getMethod(String url, int timeout){
         HttpURLConnection con = null;

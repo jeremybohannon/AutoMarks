@@ -5,6 +5,13 @@ services:
     ports:
       - "8070:8080"
 
+  browser:
+    build: ./browser
+    links:
+      - api_gateway
+    ports:
+      - "8080:80"
+
   grader:
     build: ./grader
     privileged: true

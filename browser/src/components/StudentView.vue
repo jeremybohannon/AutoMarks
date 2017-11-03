@@ -4,7 +4,7 @@
         <span>{{ assignment.description }}</span>
     </div>
     
-    <upload-file :assignmentName="assignment.name"/>
+    <upload-file :assignmentName="assignment.name" />
     
     <div v-if="syntaxError" class="syntaxError">
         <span>{{ error }}</span>

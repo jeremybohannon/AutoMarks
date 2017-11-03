@@ -13,6 +13,18 @@ const autoMarks = new AutoMarks({
   containerStopTimeLimit: 1000 * 5
 })
 
+import * as fs from 'fs-extra'
+
+app.use(async function (ctx, next) {
+  if (ctx.request.method === 'GET') {
+    ctx.response.body = JSON.parse(
+      (await fs.readFile('./assignment.json')).toString()
+    )
+  } else {
+    return next()
+  }
+})
+
 app.use(autoMarks.validateMethod)
 app.use(autoMarks.validateRequest)
 app.use(autoMarks.parseInputs)

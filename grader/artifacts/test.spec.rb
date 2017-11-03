@@ -1,8 +1,10 @@
+require "./file"
+
 describe Hash do
-  it "should fail" do
-    expect(true).to equal false
+  it "should add 1 + 2" do
+    expect(add(1, 2)).to equal 4
   end
-  it "should pass" do
-    expect(true).to equal true
+  it "should subtract 1 - 2" do
+    expect(subtract(1, 2)).to equal -1
   end
 end

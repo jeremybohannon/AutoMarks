@@ -28,7 +28,7 @@ name: 'uploadfile',
     error(file, message) {
       this.$parent.$emit('error', true);
       
-      fetch(`http://localhost:5000/src/results.json?id=1`, {
+      fetch(`/api`, {
         method: 'get'
       }).then(response => {
         return response.json()
@@ -40,8 +40,9 @@ name: 'uploadfile',
 
       console.log(message)
     },
-    success() {
-      console.log('success')
+    success(upload, responseData) {
+      this.$parent.$emit('error', false);
+      this.$parent.$emit('results', responseData.results)
     }
   }
 }

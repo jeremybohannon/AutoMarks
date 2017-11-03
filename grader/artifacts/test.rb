@@ -1,3 +1,7 @@
-def a_ruby_function
-  puts "hi"
+def add(a, b)
+  a + b
+end
+
+def subtract(a, b)
+  a - b
 end

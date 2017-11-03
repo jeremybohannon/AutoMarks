@@ -43,14 +43,21 @@ export default class AutoMarks {
   }
 
   public async parseInputs(ctx: Context, next: Function) {
-    // wait for both files to be read in
-    await Promise.all(['spec', 'source'].map(async filename => {
-      // read file into base64 string for transfer to container
-      ctx.state[filename] = Buffer.from(
-        await fs.readFile(ctx.request.body.files[filename].path)
-      ).toString('base64')
-    }))
-    // next middleware
+    // // wait for both files to be read in
+    // await Promise.all(['spec', 'source'].map(async filename => {
+    //   // read file into base64 string for transfer to container
+    //   ctx.state[filename] = Buffer.from(
+    //     await fs.readFile(ctx.request.body.files[filename].path)
+    //   ).toString('base64')
+
+    ctx.state.source = Buffer.from(
+        await fs.readFile(ctx.request.body.files.file.path)
+    ).toString('base64')
+
+    ctx.state.spec = Buffer.from(
+        await fs.readFile('./artifacts/test.spec.rb')
+    ).toString('base64')
+    
     await next()
   }
 
@@ -89,8 +96,9 @@ export default class AutoMarks {
     const isValid = ctx.request
       && ctx.request.body
       && ctx.request.body.files
-      && ctx.request.body.files.hasOwnProperty('spec')
-      && ctx.request.body.files.hasOwnProperty('source')
+      && ctx.request.body.files.hasOwnProperty('file')
+      // && ctx.request.body.files.hasOwnProperty('spec')
+      // && ctx.request.body.files.hasOwnProperty('source')
     // continue if valid request
     return isValid ? next() : ctx.status = 400
   }

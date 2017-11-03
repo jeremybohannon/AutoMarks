@@ -1,0 +1,14 @@
+{
+  "name": "Assignment #1",
+  "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+  "testCases": [
+        { "name": "Test Case #1", "pass": false },
+        { "name": "Test Case #2", "pass": false },
+        { "name": "Test Case #3", "pass": false },
+        { "name": "Test Case #4", "pass": false },
+        { "name": "Test Case #5", "pass": false },
+        { "name": "Test Case #6", "pass": false },
+        { "name": "Test Case #7", "pass": false },
+        { "name": "Test Case #8", "pass": false }
+  ]
+}

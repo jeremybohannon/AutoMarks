@@ -30,7 +30,7 @@ export default {
     const id = getParameterByName('id')
     const user = getParameterByName('user')
 
-    fetch(`http://localhost:5000/src/assignment.json?id=${id}`, {
+    fetch(`/api`, {
         method: 'get'
       }).then(response => {
         return response.json()

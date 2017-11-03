@@ -14,6 +14,7 @@ interface Config {
 
 interface Context extends Koa.Context {
   state: {
+    skip?: boolean // tmp
     container?: Docker.Container
     spec?: string
     source?: string
@@ -43,6 +44,7 @@ export default class AutoMarks {
   }
 
   public async parseInputs(ctx: Context, next: Function) {
+    if (ctx.state.skip) return next()
     // // wait for both files to be read in
     // await Promise.all(['spec', 'source'].map(async filename => {
     //   // read file into base64 string for transfer to container
@@ -72,8 +74,8 @@ export default class AutoMarks {
       }))
     // return results to the client
     ctx.response.body = {
-      assignment: ctx.request.body.fields.assignment,
-      user: ctx.request.body.fields.user,
+      assignment: ctx.request.body.fields && ctx.request.body.fields.assignment,
+      user: ctx.request.body.fields && ctx.request.body.fields.user,
       results
     }
     // next middleware
@@ -88,11 +90,13 @@ export default class AutoMarks {
   }
 
   public validateMethod(ctx: Context, next: Function) {
+    if (ctx.state.skip) return next()
     // continue with middleware if POST method
     return ctx.method === 'POST' ? next() : ctx.status = 404
   }
 
   public validateRequest(ctx: Context, next: Function) {
+    if (ctx.state.skip) return next()
     const isValid = ctx.request
       && ctx.request.body
       && ctx.request.body.files

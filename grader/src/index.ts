@@ -17,12 +17,13 @@ import * as fs from 'fs-extra'
 
 app.use(async function (ctx, next) {
   if (ctx.request.method === 'GET') {
-    ctx.response.body = JSON.parse(
-      (await fs.readFile('./assignment.json')).toString()
-    )
-  } else {
-    return next()
+    ctx.state.skip = true
+    ctx.state.spec = Buffer.from(
+        await fs.readFile('./artifacts/test.spec.rb')
+    ).toString('base64')
+    ctx.state.source = Buffer.from('').toString('base64')
   }
+  return next()
 })
 
 app.use(autoMarks.validateMethod)

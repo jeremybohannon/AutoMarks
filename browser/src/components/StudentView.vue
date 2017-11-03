@@ -16,7 +16,8 @@
                     <!-- <i v-if="testCase.pass" class="fa fa-clock-o" aria-hidden="true"></i> -->
                     <i v-if="testCase.pass" class="fa fa-check-circle" aria-hidden="true"></i>
                     <i v-if="!testCase.pass" class="fa fa-times-circle" aria-hidden="true"></i>
-                    <p>{{ testCase.case }}</p>
+                    <p class="markdown-body" v-html="$options.filters.markdown(testCase.case)">
+                    </p>
                 </div>
                 <p v-if="testCase.pass">Passed</p>
                 <p v-if="!testCase.pass">Failed</p>

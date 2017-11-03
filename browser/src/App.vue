@@ -7,6 +7,7 @@
 
 <script>
 import StudentView from './components/StudentView'
+import * as highlight from 'highlight.js'
 
 export default {
   name: 'app',
@@ -29,7 +30,7 @@ export default {
 
     const id = getParameterByName('id')
     const user = getParameterByName('user')
-
+  
     fetch(`/api`, {
         method: 'get'
       }).then(response => {
@@ -46,7 +47,6 @@ export default {
       console.log(cases)
 
       this.assignment.results = cases
-      
     },
   },
   components: {

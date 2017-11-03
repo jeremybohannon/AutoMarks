@@ -7,7 +7,10 @@
     @added-file="add" 
     ref="uploader"
   >
-  <h1>Click or Drag to upload {{assignmentName}}</h1>
+  <h1>
+    Click or Drag to upload {{assignmentName}}
+    <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+  </h1>
 </vue-transmit>  
 </template>
   

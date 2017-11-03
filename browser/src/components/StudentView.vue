@@ -80,7 +80,7 @@ export default {
     });
 
     this.description = marked(this.$refs.markdown.value)
-    highlight.initHighlightingOnLoad()
+    
   }
 }
     

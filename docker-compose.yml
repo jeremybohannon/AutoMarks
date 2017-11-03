@@ -1,14 +1,14 @@
 version: '3'
 services:
-  api_gateway:
-    build: ./api/gatewayService
-    ports:
-      - "8070:8080"
+  # api_gateway:
+  #   build: ./api/gatewayService
+  #   ports:
+  #     - "8070:8080"
 
   browser:
     build: ./browser
     links:
-      - api_gateway
+      - grader
     ports:
       - "8080:80"
 

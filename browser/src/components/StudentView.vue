@@ -1,7 +1,7 @@
 <template>
   <div class="student-view-wrapper">
-    <div class="block assignmentDescription">
-        <span>{{ assignment.description }}</span>
+    <div class="block assignmentDescription markdown-body" v-html="description">
+      
     </div>
     
     <upload-file :assignmentName="assignment.name" />
@@ -23,17 +23,47 @@
             </li>
         </ul>
     </div>
+
+    <textarea ref="markdown"
+        style="visibility: 'hidden'; width: 0; height: 0"
+    >
+## Description
+
+For this assignment we will learn how to write basic functions in `Ruby`
+
+A `function` can take multiple `inputs` and return one `output`.
+Functions consist of a `signature` which is comprised of a `method name` and input `parameters`, and a `method body`.
+
+### Example
+```rb 
+def add(a, b)
+  a + b
+end
+```
+
+### Requirements
+
+Write `3` functions in `Ruby` that `subtract`, `multiply`, and `divide` two numbers. 
+These functions should maintain the respective method names, the method body is entirely up to you.
+    </textarea>
   </div>
 </template>
 
 <script>
+import 'github-markdown-css/github-markdown.css'
+import 'highlight.js/styles/github.css'
+
 import UploadFile from './UploadFile'
+import marked from 'marked'
+import * as highlight from 'highlight.js'
+
 export default {
   name: 'StudentView',
   data: () => {
     return {
         error: "Syntax Error",
         syntaxError: false,
+        description: ''
     }
   }, 
   props: ['assignment', 'setAssignment'],
@@ -47,8 +77,12 @@ export default {
     this.$on('results', function(value){
         this.setAssignment(value)
     });
+
+    this.description = marked(this.$refs.markdown.value)
+    highlight.initHighlightingOnLoad()
   }
 }
+    
 
 </script>
 

@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import VueTransmit from "vue-transmit";
+import VueTransmit from "vue-transmit"
 
 Vue.config.productionTip = false
 

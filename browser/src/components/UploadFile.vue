@@ -27,16 +27,6 @@ name: 'uploadfile',
     },
     error(file, message) {
       this.$parent.$emit('error', true);
-      
-      fetch(`/api`, {
-        method: 'get'
-      }).then(response => {
-        return response.json()
-      }).then(json => {
-        this.$parent.$emit('results', json)
-      }).catch(err => {
-        console.log(err)
-      });
 
       console.log(message)
     },

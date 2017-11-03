@@ -11,7 +11,7 @@
     </div>
     <div class="block testCases">
         <ul class="testCasesList">
-            <li v-for="testCase in assignment.testCases">
+            <li v-for="testCase in assignment.results">
                 <div class="needsAName">
                     <!-- <i v-if="testCase.pass" class="fa fa-clock-o" aria-hidden="true"></i> -->
                     <i v-if="testCase.pass" class="fa fa-check-circle" aria-hidden="true"></i>

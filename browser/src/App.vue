@@ -45,7 +45,7 @@ export default {
     setAssignment(cases) {
       console.log(cases)
 
-      this.assignment.testCases = cases
+      this.assignment.results = cases
       
     },
   },

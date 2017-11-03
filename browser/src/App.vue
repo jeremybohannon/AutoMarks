@@ -1,12 +1,13 @@
 <template>
 <div id="wrapper">
+  <loading v-if="loading"/>
   <student-view v-if="!loading" :assignment = "assignment" :setAssignment="setAssignment"/>
-  </div>
 </div>
 </template>
 
 <script>
 import StudentView from './components/StudentView'
+import Loading from './components/Loading'
 import * as highlight from 'highlight.js'
 
 export default {
@@ -51,6 +52,7 @@ export default {
   },
   components: {
       'student-view': StudentView,
+      'loading': Loading
   }
 }
 </script>

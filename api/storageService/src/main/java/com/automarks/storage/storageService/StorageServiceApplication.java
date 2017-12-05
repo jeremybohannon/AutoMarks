@@ -1,5 +1,6 @@
 package com.automarks.storage.storageService;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
@@ -17,5 +18,13 @@ public class StorageServiceApplication {
 	public HttpMessageConverters customConverters() {
 		ByteArrayHttpMessageConverter arrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
 		return new HttpMessageConverters(arrayHttpMessageConverter);
+	}
+
+	@Bean
+	CommandLineRunner init(StorageService storageService) {
+		return (args) -> {
+			storageService.deleteAll();
+			storageService.init();
+		};
 	}
 }

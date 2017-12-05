@@ -4,15 +4,16 @@ public class Case {
     int id;
     String text;
     double pointValue;
-
+    boolean passed;
 
     public Case() {
     }
 
-    public Case(int id, String text, double pointValue) {
+    public Case(int id, String text, double pointValue, boolean passed) {
         this.id = id;
         this.text = text;
         this.pointValue = pointValue;
+        this.passed = passed;
     }
 
     public int getId() {

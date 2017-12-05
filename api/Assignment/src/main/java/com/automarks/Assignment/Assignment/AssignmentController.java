@@ -57,12 +57,22 @@ public class AssignmentController {
         * */
         String responseString = "";
         try {
+            //get file from storage done
 
-            /** TODO GET FILE FROM STOREAGE**/
+            //send to auto grader done
+                // handle response
+            //create submission
+                //save submission file
+                //tie to user
+            //delete files done
+
+
+            /**  GET FILE FROM STOREAGE**/
             CloseableHttpClient client = HttpClients.createDefault();
 
             HttpGet req = new HttpGet("http://localhost:8090/storage/assignment/" + id);
             CloseableHttpResponse resp = client.execute(req);
+
 
             BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
 
@@ -76,9 +86,10 @@ public class AssignmentController {
 
             res.toString();
 
-            Assignment specAssign = mapper.readValue(res.toString(), Assignment.class);
 
-            File spec = storageService.getFile(testFile + "/" +specAssign.getFileId());
+            Assignment specAssign = mapper.readValue(res.toString(), Assignment.class);
+//            storageService.getFile(testFile + "/" +specAssign.getFileId());
+            File spec = storageService.getFileByUrl("http://localhost:8090/storage/assignment/" + id + "/testCase", specAssign.getFileId(), "testCase");
 
 
             storageService.store(sourceFile);
@@ -110,6 +121,19 @@ public class AssignmentController {
 
             client.close();
             responseString = result.toString();
+
+            //handle response
+
+
+
+            //send to submission
+
+
+
+            //delete files
+
+            storageService.deleteFile(sourceFile.getOriginalFilename());
+            storageService.deleteFile("testCase/" + spec.getName());
 
         } catch (IOException e) {
             e.printStackTrace();

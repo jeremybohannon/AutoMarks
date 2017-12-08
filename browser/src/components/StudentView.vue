@@ -14,7 +14,7 @@
     <div class="block testCases">
         <ul class="testCasesList">
             <li v-for="testCase in assignment.results" v-bind:key="testCase.case">
-                <div class="needsAName">
+                <div class="testCaseRow">
                     <i v-if="testCase.pass" class="fa fa-check-circle" aria-hidden="true"></i>
                     <i v-if="!testCase.pass" class="fa fa-times-circle" aria-hidden="true"></i>
                     <p class="markdown-body" v-html="$options.filters.markdown(testCase.case)">
@@ -136,12 +136,12 @@ export default {
     color: #f5f5f5;
 }
 
-.needsAName {
+.testCaseRow {
     display: flex;
     width: 85%;
 }
 
-.needsAName p:not(:first-child) {
+.testCaseRow p:not(:first-child) {
     margin-left: 15px;
 }
 

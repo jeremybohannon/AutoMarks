@@ -1,7 +1,7 @@
 <template>
   <div class="professor-view-wrapper">
     <span class="title">Automarks</span>
-    <input v-bind="title" type="text" class="block" name="name" placeholder="Assignment Name">
+    <input v-model="title" type="text" class="block" name="name" placeholder="Assignment Name">
     <assignment-description @input="output"/>
     <upload-file descriptor="Test File" />
     <div class="widthBlock">
@@ -17,7 +17,7 @@ import AssignmentDescription from './AssignmentDescription'
 export default {
 name: 'ProfessorView',
   data: () => ({
-    title: 'asd',
+    title: '',
     description: '',
     file: undefined
   }),

@@ -181,7 +181,6 @@ public class AssignmentController {
 
 
             CloseableHttpClient client = HttpClients.createDefault();
-            client = HttpClients.createDefault();
             HttpPost request = new HttpPost(Routes.getRoute("Grader"));
 
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();

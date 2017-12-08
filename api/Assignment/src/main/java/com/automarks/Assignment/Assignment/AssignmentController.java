@@ -35,7 +35,7 @@ public class AssignmentController {
     //gets the assignment data
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public String getAssignment(@PathVariable long id){
-        return getMethod("http://localhost:8090/storage/assignment/" + id, 120);
+        return getMethod(Routes.getRoute("Storage") + "/storage/assignment/" + id, 120);
     }
 
     //submission of the assignment
@@ -70,7 +70,7 @@ public class AssignmentController {
             /**  GET FILE FROM STOREAGE**/
             CloseableHttpClient client = HttpClients.createDefault();
 
-            HttpGet req = new HttpGet("http://localhost:8090/storage/assignment/" + id);
+            HttpGet req = new HttpGet(Routes.getRoute("Storage") + "/storage/assignment/" + id);
             CloseableHttpResponse resp = client.execute(req);
 
 
@@ -89,14 +89,14 @@ public class AssignmentController {
 
             Assignment specAssign = mapper.readValue(res.toString(), Assignment.class);
 //            storageService.getFile(testFile + "/" +specAssign.getFileId());
-            File spec = storageService.getFileByUrl("http://localhost:8090/storage/assignment/" + id + "/testCase", specAssign.getFileId(), "testCase");
+            File spec = storageService.getFileByUrl(Routes.getRoute("Storage") + "/storage/assignment/" + id + "/testCase", specAssign.getFileId(), "testCase");
 
 
             storageService.store(sourceFile);
             File source = storageService.getFile(sourceFile.getOriginalFilename());
 
             client = HttpClients.createDefault();
-            HttpPost request = new HttpPost("http://localhost:3000/");
+            HttpPost request = new HttpPost(Routes.getRoute("Grader"));
 
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
             builder.addTextBody("assignment", Long.toString(id), ContentType.TEXT_PLAIN);

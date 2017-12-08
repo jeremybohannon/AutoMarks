@@ -33,7 +33,7 @@ public class GatewayController {
 
     @RequestMapping(value = "/assignment/{id}", method = RequestMethod.GET, produces = "application/json")
     public String getAssignment(@PathVariable long id){
-        return getMethod("http://localhost:8060/assignment/" + id, 120);
+        return getMethod(Routes.getRoute("Assignment") + "/assignment/" + id, 120);
     }
 
     @RequestMapping(value = "/assignment/{id}/submission/{userId}", method = RequestMethod.POST, produces = "application/json")
@@ -46,7 +46,7 @@ public class GatewayController {
             File source = storageService.getFile(file.getOriginalFilename());
 
             CloseableHttpClient client = HttpClients.createDefault();
-            HttpPost request = new HttpPost("http://localhost:8060/assignment/"+id+"/submission/"+userId);
+            HttpPost request = new HttpPost(Routes.getRoute("Assignment") + "/assignment/"+id+"/submission/"+userId);
 
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
             builder.addBinaryBody("source", new FileInputStream(source),

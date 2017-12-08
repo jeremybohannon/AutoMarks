@@ -69,15 +69,17 @@ export default {
         description: ''
     }
   }, 
-  props: ['assignment', 'setAssignment'],
+  props: ['assignment', 'setAssignment', 'studentId'],
   components: {
       'upload-file': UploadFile,
       'assignment-description': AssignmentDescription
   },
   mounted(){
-    this.$on('error', function(value){
-        this.syntaxError = value
+    this.$on('file', function(value){
+        console.log(value.name)
+        console.log(this.studentId)
     });
+
     this.$on('results', function(value){
         this.setAssignment(value)
     });

@@ -34,9 +34,12 @@
     methods: {
       togglePreview () {
         this.inPreview = !this.inPreview
-        requestAnimationFrame(() => {
+        setTimeout(() => {
           highlight.highlightBlock(this.$refs.code)
-        })
+        },50)
+        setTimeout(() => {
+          highlight.highlightBlock(this.$refs.code)
+        },1000)
       },
       handleInput (event) {
         this.$emit('input', event.target.value)

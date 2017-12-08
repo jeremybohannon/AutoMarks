@@ -1,6 +1,7 @@
 <template>
   <div class="professor-view-wrapper">
     <span class="title">Automarks</span>
+    <input v-bind="title" type="text" class="block" name="name" placeholder="Assignment Name">
     <assignment-description @input="output"/>
     <upload-file descriptor="Test File" />
     <div class="widthBlock">
@@ -16,15 +17,17 @@ import AssignmentDescription from './AssignmentDescription'
 export default {
 name: 'ProfessorView',
   data: () => ({
-    
+    title: 'asd',
+    description: '',
+    file: undefined
   }),
   props: ['assignmentName'],
   methods: {
-    submit(){
-      console.log('test')
+    submit () {
+      console.log(this.title, this.description, this.file)
     },
-    output(content){
-      console.log(content)
+    output (content) {
+      this.description = content
     }
   },
   components: {
@@ -32,7 +35,7 @@ name: 'ProfessorView',
       'assignment-description': AssignmentDescription
   },
   mounted(){
-    this.$on('error', function(value){
+    this.$on('error', function(value) {
         console.log('error')
     });
     this.$on('results', function(value){
@@ -43,6 +46,12 @@ name: 'ProfessorView',
 </script>
 
 <style scoped>
+input[name="name"] {
+  display: block;
+  margin-bottom: -10px;
+  font-size: 1rem;
+}
+
 .professor-view-wrapper {
   width: 100%;
   display: flex;

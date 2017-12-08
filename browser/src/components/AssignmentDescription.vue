@@ -102,7 +102,6 @@
       overflow: hidden;
       margin-top: 25px;
       margin-bottom: 25px;
-      width: 90%;
       max-width: 1000px;
       padding: 15px 15px;
       background: #FFF;

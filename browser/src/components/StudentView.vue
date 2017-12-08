@@ -1,10 +1,12 @@
 <template>
   <div class="student-view-wrapper">
-    <div class="block assignmentDescription markdown-body" v-html="description">
-      
-    </div>
-    <!-- TODO fix this -->
-    <upload-file />
+    
+    <assignment-description 
+        :isStudent="true"
+        :content="this.description"
+    ></assignment-description>
+    
+    <upload-file :assignmentName="assignment.name" />
     
     <div v-if="syntaxError" class="syntaxError">
         <span>{{ error }}</span>
@@ -13,7 +15,6 @@
         <ul class="testCasesList">
             <li v-for="testCase in assignment.results" v-bind:key="testCase.case">
                 <div class="needsAName">
-                    <!-- <i v-if="testCase.pass" class="fa fa-clock-o" aria-hidden="true"></i> -->
                     <i v-if="testCase.pass" class="fa fa-check-circle" aria-hidden="true"></i>
                     <i v-if="!testCase.pass" class="fa fa-times-circle" aria-hidden="true"></i>
                     <p class="markdown-body" v-html="$options.filters.markdown(testCase.case)">
@@ -26,7 +27,7 @@
     </div>
 
     <textarea ref="markdown"
-        style="visibility: 'hidden'; width: 0; height: 0"
+        style="visibility: hidden; width: 0; height: 0"
     >
 ## Description
 
@@ -54,9 +55,10 @@ These functions should maintain the respective method names, the method body is 
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/github.css'
 
-import UploadFile from './UploadFile'
-import marked from 'marked'
 import * as highlight from 'highlight.js'
+import AssignmentDescription from './AssignmentDescription'
+import marked from 'marked'
+import UploadFile from './UploadFile'
 
 export default {
   name: 'StudentView',
@@ -69,7 +71,8 @@ export default {
   }, 
   props: ['assignment', 'setAssignment'],
   components: {
-      'upload-file': UploadFile
+      'upload-file': UploadFile,
+      'assignment-description': AssignmentDescription
   },
   mounted(){
     this.$on('error', function(value){
@@ -79,12 +82,11 @@ export default {
         this.setAssignment(value)
     });
 
-    console.log(this.assignment)
-
-    this.description = marked(this.$refs.markdown.value)
+    this.description = this.$refs.markdown.value
     
     highlight.initHighlightingOnLoad()
-  }, updated(){
+  }, 
+  updated(){
     highlight.initHighlighting()
   }
 }
@@ -143,26 +145,6 @@ export default {
     margin-left: 15px;
 }
 
-.block {
-    margin-top: 25px;
-    margin-bottom: 25px;
-    width: 90%;
-    max-width: 1000px;
-    padding: 15px 15px;
-    background: #FFF;
-    border: 1px solid #C7CDD1;
-    border-radius: 10px 10px; 
-}
-
-.assignmentDescription {
-    text-align: justify;
-}
-.assignmentDescription span {
-    font-size: 1.0em;
-    color: grey;
-    font-weight: 100;
-    font-family: helvetica;
-}
 .student-view-wrapper {
     width: 100%;
     display: flex;
@@ -197,5 +179,15 @@ export default {
     font-weight: 100;
     font-family: helvetica;
     color: #FFF;
+}
+.block {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    width: 90%;
+    max-width: 1000px;
+    padding: 15px 15px;
+    background: #FFF;
+    border: 1px solid #C7CDD1;
+    border-radius: 10px 10px; 
 }
 </style>

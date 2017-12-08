@@ -1,8 +1,8 @@
 <template>
 <div id="wrapper">
   <loading v-if="loading"/>
-  <professor-view v-if="!loading && isStudent" />
-  <student-view v-if="!loading && !isStudent" :assignment = "assignment" :setAssignment="setAssignment"/>
+  <professor-view v-if="!loading && !isStudent" />
+  <student-view v-if="!loading && isStudent" :assignment = "assignment" :setAssignment="setAssignment"/>
 </div>
 </template>
 

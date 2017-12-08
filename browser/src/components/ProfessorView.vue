@@ -1,9 +1,7 @@
 <template>
   <div class="professor-view-wrapper">
     <span class="title">Automarks</span>
-    <div class="block">
-      Create assignment component here
-    </div>
+    <assignment-description @input="output"/>
     <upload-file descriptor="Test File" />
     <div class="widthBlock">
       <button v-on:click="submit" class="submit" >Submit</button>
@@ -13,6 +11,7 @@
   
 <script>
 import UploadFile from './UploadFile'
+import AssignmentDescription from './AssignmentDescription'
 
 export default {
 name: 'ProfessorView',
@@ -23,10 +22,14 @@ name: 'ProfessorView',
   methods: {
     submit(){
       console.log('test')
+    },
+    output(content){
+      console.log(content)
     }
   },
   components: {
-      'upload-file': UploadFile
+      'upload-file': UploadFile,
+      'assignment-description': AssignmentDescription
   },
   mounted(){
     this.$on('error', function(value){

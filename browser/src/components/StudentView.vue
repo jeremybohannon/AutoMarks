@@ -3,8 +3,8 @@
     <div class="block assignmentDescription markdown-body" v-html="description">
       
     </div>
-    
-    <upload-file :assignmentName="assignment.name" />
+    <!-- TODO fix this -->
+    <upload-file />
     
     <div v-if="syntaxError" class="syntaxError">
         <span>{{ error }}</span>
@@ -78,6 +78,8 @@ export default {
     this.$on('results', function(value){
         this.setAssignment(value)
     });
+
+    console.log(this.assignment)
 
     this.description = marked(this.$refs.markdown.value)
     

@@ -1,12 +1,14 @@
 <template>
 <div id="wrapper">
   <loading v-if="loading"/>
-  <student-view v-if="!loading" :assignment = "assignment" :setAssignment="setAssignment"/>
+  <professor-view v-if="!loading && isStudent" />
+  <student-view v-if="!loading && !isStudent" :assignment = "assignment" :setAssignment="setAssignment"/>
 </div>
 </template>
 
 <script>
 import StudentView from './components/StudentView'
+import ProfessorView from './components/ProfessorView'
 import Loading from './components/Loading'
 import * as highlight from 'highlight.js'
 
@@ -15,6 +17,7 @@ export default {
   data: () => {
     return {
       loading: true,
+      isStudent: false,
       assignment: {}
     }
   },
@@ -31,8 +34,10 @@ export default {
 
     const id = getParameterByName('id')
     const user = getParameterByName('user')
+    this.isStudent = getParameterByName('student')
   
-    fetch(`/api`, {
+    if(this.isStudent){
+      fetch(`/api`, {
         method: 'get'
       }).then(response => {
         return response.json()
@@ -42,6 +47,9 @@ export default {
       }).catch(err => {
         console.log(err)
       });
+    } else {
+      this.loading = false
+    }
   },
   methods: {
     setAssignment(cases) {
@@ -52,6 +60,7 @@ export default {
   },
   components: {
       'student-view': StudentView,
+      'professor-view': ProfessorView,
       'loading': Loading
   }
 }
@@ -69,5 +78,6 @@ export default {
     width: 100%;
     background: #f5f5f5;
     border: 1px solid #C7CDD1;
+    min-width: 700px;
   }
 </style>

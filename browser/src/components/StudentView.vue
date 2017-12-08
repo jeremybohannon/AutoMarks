@@ -6,7 +6,7 @@
         :content="this.description"
     ></assignment-description>
     
-    <upload-file :assignmentName="assignment.name" />
+    <upload-file descriptor="assignment" />
     
     <div v-if="syntaxError" class="syntaxError">
         <span>{{ error }}</span>

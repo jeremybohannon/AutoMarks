@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 @Service
 public class StorageService {
 
-    private final Path rootLocation = Paths.get("temp");
+    private final Path rootLocation = Paths.get("assignmentTemp");
 
     public void store(MultipartFile file){
         try {

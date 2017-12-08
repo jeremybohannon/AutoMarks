@@ -35,11 +35,8 @@ name: 'ProfessorView',
       'assignment-description': AssignmentDescription
   },
   mounted(){
-    this.$on('error', function(value) {
-        console.log('error')
-    });
-    this.$on('results', function(value){
-        console.log(value)
+    this.$on('file', function(value){
+        console.log(value.name)
     });
   }
 }

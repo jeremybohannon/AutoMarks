@@ -2,7 +2,7 @@
   <div class="student-view-wrapper">
     
     <assignment-description 
-        :isStudent="true"
+        :isStudent="false"
         :content="this.description"
     ></assignment-description>
     

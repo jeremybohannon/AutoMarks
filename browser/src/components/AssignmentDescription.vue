@@ -13,11 +13,13 @@
     <div 
       v-if="inPreview" 
       v-html="htmlContent" 
+      ref="code"
       class="assignmentDescription markdown-body"></div>
   </div>
 </template>
 
 <script>
+  import 'highlight.js/styles/github.css'
   import marked from 'marked'
   import * as highlight from 'highlight.js'
 
@@ -32,7 +34,9 @@
     methods: {
       togglePreview () {
         this.inPreview = !this.inPreview
-        highlight.initHighlighting()
+        requestAnimationFrame(() => {
+          highlight.highlightBlock(this.$refs.code)
+        })
       },
       handleInput (event) {
         this.$emit('input', event.target.value)

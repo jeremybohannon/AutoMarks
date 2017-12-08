@@ -56,4 +56,12 @@ public class Assignment {
     public void setCases(ArrayList<Case> cases) {
         this.cases = cases;
     }
+
+    public String getAssignmentName() {
+        return assignmentName;
+    }
+
+    public void setAssignmentName(String assignmentName) {
+        this.assignmentName = assignmentName;
+    }
 }

@@ -170,14 +170,38 @@ public class StorageController {
     @RequestMapping(value = "/user/{id}", method = RequestMethod.POST, produces = "application/json")
     public User getUser(@PathVariable String id){
         User user = userRepository.findBySchoolID(id).get(0);
-        //        User user = new User();
-//        user.setFirstName("Andrew");
-//        user.setLastName("Schlesinger");
-//        user.setSchoolID("800827630");
-//        user.setLogin("aschles4");
-//        user.setPassword("pass1234");
-//        user.setStudent(true);
-//        user.setProffesor(false);
+        return user;
+    }
+
+    //DATABASE SEED
+
+    @RequestMapping(value = "/seed", method = RequestMethod.POST, produces = "application/json")
+    public User getUser(){
+
+        //student
+        User user = new User();
+        user.setFirstName("Andrew");
+        user.setLastName("Schlesinger");
+        user.setSchoolID("800827630");
+        user.setLogin("aschles4");
+        user.setPassword("pass1234");
+        user.setStudent(true);
+        user.setProffesor(false);
+
+        userRepository.save(user);
+
+        //professor
+        user.setFirstName("Richard");
+        user.setLastName("Ilson");
+        user.setSchoolID("80082000");
+        user.setLogin("rIlson4");
+        user.setPassword("pass1234");
+        user.setStudent(false);
+        user.setProffesor(true);
+
+        userRepository.save(user);
+
+
         return user;
     }
 

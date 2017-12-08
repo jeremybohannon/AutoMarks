@@ -79,17 +79,47 @@ public class GatewayController {
 
 
     @RequestMapping(value = "/assignment/create/{proId}", method = RequestMethod.POST, produces = "application/json")
-    public String createAssignment(@PathVariable String proId, @RequestParam("file") MultipartFile file){
-        //pass create assignment
-        //file
-
-        //name
-        //discrip
+    public String createAssignment(@PathVariable String proId,@RequestParam("name") String name, @RequestParam("description") String descript, @RequestParam("file") MultipartFile specFile){
         //spec file
+        String responseString = "";
+        try {
 
-        //calling /assignment/create
+            storageService.store(specFile);
+            File source = storageService.getFile(specFile.getOriginalFilename());
 
-        return "";
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost request = new HttpPost(Routes.getRoute("Assignment") + "/assignment/create/"+proId);
+
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.addBinaryBody("spec", new FileInputStream(source),
+                    ContentType.APPLICATION_OCTET_STREAM, specFile.getOriginalFilename());
+            builder.addTextBody("name", name, ContentType.TEXT_PLAIN);
+            builder.addTextBody("description", descript, ContentType.TEXT_PLAIN);
+
+            HttpEntity multipart = builder.build();
+            request.setEntity(multipart);
+
+            CloseableHttpResponse response = client.execute(request);
+
+            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+
+            //delete temp file
+            storageService.deleteFile(specFile.getOriginalFilename());
+
+            client.close();
+            responseString = result.toString();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return responseString;
     }
 
 

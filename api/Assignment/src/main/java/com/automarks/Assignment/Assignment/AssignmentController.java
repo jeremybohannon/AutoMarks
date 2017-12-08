@@ -1,5 +1,7 @@
 package com.automarks.Assignment.Assignment;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -17,6 +19,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
 
 @RestController
@@ -163,11 +166,92 @@ public class AssignmentController {
     }
 
     @RequestMapping(value = "/create/{proId}", method = RequestMethod.POST, produces = "application/json")
-    public String createAssignment(@PathVariable String proId, @RequestParam("source") MultipartFile sourceFile){
+    public String createAssignment(@PathVariable String proId, @RequestParam("name") String name, @RequestParam("description") String descript, @RequestParam("spec") MultipartFile specFile){
+        long id = System.currentTimeMillis() % 1000;
+        Assignment assignment = new Assignment();
+        assignment.setId(id);
+        assignment.setDescription(descript);
+        assignment.setAssignmentName(name);
+        //call grader to get cases
+        String cases = "";
+        try {
+
+            storageService.store(specFile);
+            File spec = storageService.getFile(specFile.getOriginalFilename());
+
+
+            CloseableHttpClient client = HttpClients.createDefault();
+            client = HttpClients.createDefault();
+            HttpPost request = new HttpPost(Routes.getRoute("Grader"));
+
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.addBinaryBody("spec", new FileInputStream(spec), ContentType.APPLICATION_OCTET_STREAM, "test");
+
+            HttpEntity multipart = builder.build();
+            request.setEntity(multipart);
+
+            CloseableHttpResponse response = client.execute(request);
+
+            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+
+            client.close();
+            cases = result.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assignment.setCases(parseCases(cases));
+
+
+
         //call canvas api... and create a new assignment in our canvas sand box class
 
+
         //create assignment and store into db
-        return "";
+            //call create assignment in storage service
+        try {
+
+            String assignJSON = mapper.writeValueAsString(assignment);
+            storageService.store(specFile);
+            File spec = storageService.getFile(specFile.getOriginalFilename());
+
+
+            CloseableHttpClient client = HttpClients.createDefault();
+            client = HttpClients.createDefault();
+            HttpPost request = new HttpPost(Routes.getRoute("Storage")+ "/assignment/createOrUpdate");
+
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.addTextBody("assign", assignJSON, ContentType.TEXT_PLAIN);
+            builder.addBinaryBody("source", new FileInputStream(spec), ContentType.APPLICATION_OCTET_STREAM, "test");
+
+            HttpEntity multipart = builder.build();
+            request.setEntity(multipart);
+
+            CloseableHttpResponse response = client.execute(request);
+
+            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+
+            client.close();
+            cases = result.toString();
+        } catch(JsonParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return cases;
     }
 
 
@@ -179,6 +263,21 @@ public class AssignmentController {
 //        return "false";
 //    }
 
+    //Helping functions
+    private ArrayList<Case> parseCases(String x){
+        ArrayList<Case> cases = new ArrayList<>();
+        try {
+//            TypeFactory typeFactory = mapper.getTypeFactory();
+//            cases = mapper.convertValue(x, typeFactory.constructCollectionType(ArrayList.class, Case.class));
+            JsonNode valuesNode = mapper.readTree(x).get("cases");
+            for (JsonNode node : valuesNode) {
+                cases.add(mapper.readValue(node.toString(), Case.class));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cases;
+    }
 
     private String getMethod(String url, int timeout){
         HttpURLConnection con = null;

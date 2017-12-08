@@ -21,8 +21,8 @@ public class Assignment {
         this.assignmentName = assignmentName;
     }
 
-    public void addCase(int id, String text, double points){
-        cases.add(new Case(id, text, points));
+    public void addCase(int id, String text, double points, boolean passed){
+        cases.add(new Case(id, text, points, passed));
     }
 
     public long getId() {

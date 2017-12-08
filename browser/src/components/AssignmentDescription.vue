@@ -1,10 +1,15 @@
 <template>
-  <div v-if="isStudent" class="block assignmentDescription markdown-body">
-    <!-- content generated from description -->  
-  </div>
+  <div 
+    v-if="isStudent" 
+    v-html="htmlStudentDescription" 
+    class="block assignmentDescription markdown-body"></div>
   <div v-else class="block">
-    <button @click="togglePreview">Toggle</button>
-    <textarea :placeholder="placeholder" v-model="rawContent"></textarea>
+    <button @click="togglePreview">Toggle Preview</button>
+    <textarea 
+      :placeholder="placeholder" 
+      v-model="rawContent"
+      @input="handleInput"
+    ></textarea>
     <div 
       v-if="inPreview" 
       v-html="htmlContent" 
@@ -14,6 +19,7 @@
 
 <script>
   import marked from 'marked'
+  import * as highlight from 'highlight.js'
 
   export default {
     name: 'AssignmentDescription',
@@ -24,23 +30,42 @@
       rawContent: ''
     }),
     methods: {
-      togglePreview() {
+      togglePreview () {
         this.inPreview = !this.inPreview
+        highlight.initHighlighting()
+      },
+      handleInput (event) {
+        this.$emit('input', event.target.value)
       }
     },
     computed: {
-      htmlContent() {
+      htmlContent () {
         return marked(this.rawContent)
-      } 
+      },
+      htmlStudentDescription () {
+        return marked(this.content)
+      }
     }
   }
 </script>
 
 <style scoped>
   button {
-    position: fixed;
-    top: 0;
-    left: 0;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 3;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    background: #00703C;
+    color: white;
+    opacity: 0.9;
+    font-size: .8rem;
+  }
+  button:hover {
+    opacity: 0.5;
   }
   textarea {
     width: 100%;

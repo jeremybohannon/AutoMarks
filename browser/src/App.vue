@@ -1,8 +1,11 @@
 <template>
 <div id="wrapper">
   <loading v-if="loading"/>
-  <professor-view v-if="!loading && !isStudent" />
-  <student-view v-if="!loading && isStudent" :assignment = "assignment" :setAssignment="setAssignment"/>
+  <professor-view v-if="!loading && !studentId" />
+  <student-view v-if="!loading && studentId" 
+    :assignment = "assignment" 
+    :setAssignment="setAssignment"
+    :studentId="studentId"/>
 </div>
 </template>
 
@@ -17,7 +20,8 @@ export default {
   data: () => {
     return {
       loading: true,
-      isStudent: false,
+      studentId: null,
+      assignmentId: null,
       assignment: {}
     }
   },
@@ -32,11 +36,10 @@ export default {
       return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
-    const id = getParameterByName('id')
-    const user = getParameterByName('user')
-    this.isStudent = getParameterByName('student')
+    this.studentId = getParameterByName('student')
+    this.assignmentId = getParameterByName('assignmentId')
   
-    if(this.isStudent){
+    if(this.studentId){
       fetch(`/api`, {
         method: 'get'
       }).then(response => {
@@ -53,8 +56,6 @@ export default {
   },
   methods: {
     setAssignment(cases) {
-      console.log(cases)
-
       this.assignment.results = cases
     },
   },

@@ -1,9 +1,7 @@
 <template>
 <vue-transmit 
     class="uploader"
-    v-bind="options" 
-    @success="success" 
-    @error="error" 
+    v-bind="options"
     @added-file="add" 
     ref="uploader"
   >
@@ -19,23 +17,14 @@ export default {
 name: 'uploadfile',
   data: () => ({
     options: {
-      url: '//localhost:3000/',
+      url: "",
       clickable: true
     }
   }),
   props: ['descriptor'],
   methods: {
     add(file) {
-      console.log(file.name)
-    },
-    error(file, message) {
-      this.$parent.$emit('error', true);
-
-      console.log(message)
-    },
-    success(upload, responseData) {
-      this.$parent.$emit('error', false);
-      this.$parent.$emit('results', responseData.results)
+      this.$parent.$emit('file', file)
     }
   }
 }

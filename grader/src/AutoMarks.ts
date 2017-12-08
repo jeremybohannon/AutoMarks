@@ -76,7 +76,7 @@ export default class AutoMarks {
     ctx.response.body = {
       assignment: ctx.request.body.fields && ctx.request.body.fields.assignment,
       user: ctx.request.body.fields && ctx.request.body.fields.user,
-      results
+      cases: results
     }
     // next middleware
     return next()

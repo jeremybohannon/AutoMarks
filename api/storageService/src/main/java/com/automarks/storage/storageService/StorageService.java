@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 @Service
 public class StorageService {
 
-    private final Path rootLocation = Paths.get("temp");
+    public final Path rootLocation = Paths.get("temp");
 
     public void store(MultipartFile file){
         try {
@@ -42,6 +42,21 @@ public class StorageService {
         }
         return getFile(fileName);
     }
+
+    public boolean isFile(String filename){
+        try{
+            Path f = rootLocation.resolve(filename);
+            File file = new File(String.valueOf(f));
+            if(file.exists() || file.canRead()){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            return false;
+        }
+    }
+
 
     public File getFile(String filename){
         try{

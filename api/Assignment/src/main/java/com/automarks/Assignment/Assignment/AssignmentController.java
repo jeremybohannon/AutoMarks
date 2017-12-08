@@ -162,23 +162,22 @@ public class AssignmentController {
 //        return "[ {\"id\" : 1, \"pass\" : true}, {\"id\" : 2, \"pass\" : false} ]";
     }
 
-    //receive assignment grades
-    @RequestMapping(value = "/{id}/graded/{userId}", method = RequestMethod.POST, produces = "application/json")
-    public String gradedAssignment(@PathVariable long id, @PathVariable long userId){
-        //receive outputs from auto grader
-            //store user submission in database with user and assignment information
+    @RequestMapping(value = "/create/{proId}", method = RequestMethod.POST, produces = "application/json")
+    public String createAssignment(@PathVariable String proId, @RequestParam("source") MultipartFile sourceFile){
+        //call canvas api... and create a new assignment in our canvas sand box class
 
-        //
-        return "false";
+        //create assignment and store into db
+        return "";
     }
+
 
     //get user scoring
-    @RequestMapping(value = "/{id}/scores/{userId}", method = RequestMethod.GET, produces = "application/json")
-    public String assignmentScore(@PathVariable long id, @PathVariable long userId){
-        //goes into database and get users info and finds the past assignment submission and returns
-
-        return "false";
-    }
+//    @RequestMapping(value = "/{id}/scores/{userId}", method = RequestMethod.GET, produces = "application/json")
+//    public String assignmentScore(@PathVariable long id, @PathVariable long userId){
+//        //goes into database and get users info and finds the past assignment submission and returns
+//
+//        return "false";
+//    }
 
 
     private String getMethod(String url, int timeout){

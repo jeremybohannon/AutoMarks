@@ -15,5 +15,5 @@ public interface UserRepository extends MongoRepository<User, String>{
     @Override
     List<User> findAll(Sort sort);
 
-    List<User> findById(long id);
+    List<User> findBySchoolID(String schoolID);
 }

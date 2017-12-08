@@ -77,6 +77,22 @@ public class GatewayController {
         return responseString;
     }
 
+
+    @RequestMapping(value = "/assignment/create/{proId}", method = RequestMethod.POST, produces = "application/json")
+    public String createAssignment(@PathVariable String proId, @RequestParam("file") MultipartFile file){
+        //pass create assignment
+        //file
+
+        //name
+        //discrip
+        //spec file
+
+        //calling /assignment/create
+
+        return "";
+    }
+
+
     private String getMethod(String url, int timeout){
         HttpURLConnection con = null;
         try {

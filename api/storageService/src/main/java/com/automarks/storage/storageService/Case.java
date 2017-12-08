@@ -39,4 +39,12 @@ public class Case {
     public void setPointValue(double pointValue) {
         this.pointValue = pointValue;
     }
+
+    public boolean isPassed() {
+        return passed;
+    }
+
+    public void setPassed(boolean passed) {
+        this.passed = passed;
+    }
 }

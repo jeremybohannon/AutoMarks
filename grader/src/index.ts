@@ -25,7 +25,7 @@ app.use(async function (ctx, next) {
   } else if (ctx.request.method === 'POST') {
     const buffers = await Promise.all([
       fs.readFile(ctx.request.body.files.spec.path),
-      fs.readFile(ctx.request.body.files.source.path)
+      ctx.request.body.files.source ? fs.readFile(ctx.request.body.files.source.path) : Buffer.from('')
     ])
     const [ spec, source ] = buffers.map(
       buffer => Buffer.from(buffer).toString('base64')

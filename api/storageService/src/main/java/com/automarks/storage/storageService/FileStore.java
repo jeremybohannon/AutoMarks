@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class FileStore {
 
-    Mongo mongo = new Mongo("localhost", 27017);
+    Mongo mongo = new Mongo(System.getenv("MONGO_HOST"), 27017);
     DB db = mongo.getDB("automarks");
     private final String collection = "files";
 

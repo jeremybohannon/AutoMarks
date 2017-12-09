@@ -27,12 +27,12 @@ services:
     links:
       - mongo
 
-  browser:
-    build: ./browser
-    ports:
-      - "8080:80"
-    links: 
-      - gateway_service
+  # browser:
+  #   build: ./browser
+  #   ports:
+  #     - "8080:80"
+  #   links: 
+  #     - gateway_service
 
   grader:
     build: ./grader
@@ -43,6 +43,6 @@ services:
   mongo:
     image: mongo
     volumes: 
-      - /Users/nick/Desktop/data:/data/db
+      - ./mongo:/data/db
     ports:
        - "5000:27017"

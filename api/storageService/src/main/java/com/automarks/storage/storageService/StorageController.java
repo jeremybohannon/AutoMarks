@@ -65,6 +65,7 @@ public class StorageController {
         //delete temp files
         storageService.deleteFile(sourceFile.getOriginalFilename());
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        dataMap.put("assignmentId", assignment.getId());
         dataMap.put("success", "true");
         return dataMap;
     }
@@ -163,6 +164,7 @@ public class StorageController {
         User user = mapper.convertValue(mapPayload, User.class);
         userRepository.save(user);
         Map<String, Object> dataMap = new HashMap<String, Object>();
+        //**TODO add assignment id
         dataMap.put("success", "true");
         return dataMap;
     }

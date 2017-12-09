@@ -222,7 +222,7 @@ public class AssignmentController {
 
             CloseableHttpClient client = HttpClients.createDefault();
             client = HttpClients.createDefault();
-            HttpPost request = new HttpPost(Routes.getRoute("Storage")+ "/assignment/createOrUpdate");
+            HttpPost request = new HttpPost(Routes.getRoute("Storage")+ "/storage/assignment/createOrUpdate");
 
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
             builder.addTextBody("assign", assignJSON, ContentType.TEXT_PLAIN);

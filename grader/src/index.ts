@@ -23,6 +23,7 @@ app.use(async function (ctx, next) {
     ).toString('base64')
     ctx.state.source = Buffer.from('').toString('base64')
   } else if (ctx.request.method === 'POST') {
+    console.log(ctx.request.body)
     const buffers = await Promise.all([
       fs.readFile(ctx.request.body.files.spec.path),
       ctx.request.body.files.source ? fs.readFile(ctx.request.body.files.source.path) : Buffer.from('')

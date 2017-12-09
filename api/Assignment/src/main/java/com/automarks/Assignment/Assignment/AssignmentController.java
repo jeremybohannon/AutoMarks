@@ -217,7 +217,6 @@ public class AssignmentController {
         try {
 
             String assignJSON = mapper.writeValueAsString(assignment);
-            storageService.store(specFile);
             File spec = storageService.getFile(specFile.getOriginalFilename());
 
 

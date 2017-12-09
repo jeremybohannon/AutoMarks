@@ -1,33 +1,33 @@
 <template>
-<vue-transmit 
-    class="uploader"
-    v-bind="options"
-    @added-file="add" 
-    ref="uploader"
-  >
-  <h1>
-    Click or Drag to upload {{ descriptor }}
-    <i class="fa fa-cloud-upload" aria-hidden="true"></i>
-  </h1>
-</vue-transmit>  
+  <vue-transmit 
+      :clickable="true"
+      :url="url"
+      :params="params"
+      @success="success" 
+      @failed="failed"
+      class="uploader"
+      ref="uploader"
+    >
+    <h1>
+      Click or Drag to upload {{ descriptor }}
+      <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+    </h1>
+  </vue-transmit>  
 </template>
   
 <script>
-export default {
-name: 'uploadfile',
-  data: () => ({
-    options: {
-      url: "",
-      clickable: true
-    }
-  }),
-  props: ['descriptor'],
-  methods: {
-    add(file) {
-      this.$parent.$emit('file', file)
+  export default {
+    name: 'uploadfile',
+    props: ['descriptor', 'url', 'params'],
+    methods: {
+      success (...args) {
+        this.$emit('success', ...args);
+      },
+      failed (...args) {
+        this.$emit('failed', ...args);
+      }
     }
   }
-}
 </script>
 
 <style>

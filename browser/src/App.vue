@@ -25,7 +25,7 @@ export default {
       assignment: {}
     }
   },
-  mounted(){
+  async mounted () {
     function getParameterByName(name, url) {
       if (!url) url = window.location.href;
       name = name.replace(/[\[\]]/g, "\\$&");
@@ -40,23 +40,23 @@ export default {
     this.assignmentId = getParameterByName('assignmentId')
   
     if(this.studentId){
-      fetch(`/api`, {
-        method: 'get'
-      }).then(response => {
-        return response.json()
-      }).then(json => {
-        this.assignment = json
+      try {
+        const res = await fetch(
+          `/api/v1/assignment/${this.assignmentId}`
+        )
+        const data = await res.json()
+        if (data.error) throw data.error
+        this.assignment = data
+      } catch (error) {
+        console.log('ERROR', error)
+      } finally {
         this.loading = false
-      }).catch(err => {
-        console.log(err)
-      });
-    } else {
-      this.loading = false
+      }
     }
   },
   methods: {
     setAssignment(cases) {
-      this.assignment.results = cases
+      this.assignment.cases = cases
     },
   },
   components: {

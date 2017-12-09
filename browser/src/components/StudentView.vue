@@ -3,51 +3,32 @@
     
     <assignment-description 
         :isStudent="true"
-        :content="this.description"
+        :content="description"
     ></assignment-description>
     
-    <upload-file descriptor="assignment" />
+    <upload-file 
+        :url="requestUrl"
+        @success="success"
+        descriptor="assignment" 
+    />
     
     <div v-if="syntaxError" class="syntaxError">
         <span>{{ error }}</span>
     </div>
     <div class="block testCases">
         <ul class="testCasesList">
-            <li v-for="testCase in assignment.results" v-bind:key="testCase.case">
+            <li v-for="testCase in assignment.cases" v-bind:key="testCase.text">
                 <div class="testCaseRow">
-                    <i v-if="testCase.pass" class="fa fa-check-circle" aria-hidden="true"></i>
-                    <i v-if="!testCase.pass" class="fa fa-times-circle" aria-hidden="true"></i>
-                    <p class="markdown-body" v-html="$options.filters.markdown(testCase.case)">
+                    <i v-if="testCase.passed" class="fa fa-check-circle" aria-hidden="true"></i>
+                    <i v-else class="fa fa-times-circle" aria-hidden="true"></i>
+                    <p class="markdown-body" v-html="$options.filters.markdown(testCase.text)">
                     </p>
                 </div>
-                <p v-if="testCase.pass">Passed</p>
-                <p v-if="!testCase.pass">Failed</p>
+                <p v-if="testCase.passed">Passed</p>
+                <p v-else>Failed</p>
             </li>
         </ul>
     </div>
-
-    <textarea ref="markdown"
-        style="visibility: hidden; width: 0; height: 0"
-    >
-## Description
-
-For this assignment we will learn how to write basic functions in `Ruby`
-
-A `function` can take multiple `inputs` and return one `output`.
-Functions consist of a `signature` which is comprised of a `method name` and input `parameters`, and a `method body`.
-
-### Example
-```rb 
-def add(a, b)
-  a + b
-end
-```
-
-### Requirements
-
-Write `3` functions in `Ruby` that `subtract`, `multiply`, and `divide` two numbers. 
-These functions should maintain the respective method names, the method body is entirely up to you.
-    </textarea>
   </div>
 </template>
 
@@ -62,33 +43,36 @@ import UploadFile from './UploadFile'
 
 export default {
   name: 'StudentView',
-  data: () => {
-    return {
-        error: "Syntax Error",
-        syntaxError: false,
-        description: ''
-    }
-  }, 
-  props: ['assignment', 'setAssignment', 'studentId'],
+  data: () => ({
+    error: "Syntax Error",
+    syntaxError: false,
+    description: ''
+  }), 
+  props: [
+    'assignment', 
+    'setAssignment', 
+    'studentId'
+  ],
   components: {
-      'upload-file': UploadFile,
-      'assignment-description': AssignmentDescription
+    'upload-file': UploadFile,
+    'assignment-description': AssignmentDescription
   },
-  mounted(){
-    this.$on('file', function(value){
-        console.log(value.name)
-        console.log(this.studentId)
-    });
-
-    this.$on('results', function(value){
-        this.setAssignment(value)
-    });
-
-    this.description = this.$refs.markdown.value
+  computed: {
+    requestUrl () {
+        return `/api/v1/assignment/${this.assignment.id}/submission/${this.studentId}`
+    }
+  },
+  methods: {
+      success (vueTransmitFile, responseData) {
+          this.setAssignment(responseData.cases)
+      }
+  },
+  mounted () {
+    this.description = this.assignment.description
     
     highlight.initHighlightingOnLoad()
   }, 
-  updated(){
+  updated () {
     highlight.initHighlighting()
   }
 }

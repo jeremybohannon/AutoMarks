@@ -11,7 +11,6 @@ CANVAS_TOKEN=<your_canvas_token>
 You can generate a Canvas token from [here](https://uncc.instructure.com/profile/settings).
 
 <br>
-<br>
 
 ## Frontend Development
 
@@ -22,7 +21,6 @@ npm start
 ```
 
 <br>
-<br>
 
 In a second terminal at the root of the project, run the following command to start all other services:
 
@@ -31,11 +29,9 @@ docker-compose up
 ```
 
 <br>
-<br>
 
 __Note__: You will need to rebuild the image of any service that changes. 
 
-<br>
 <br>
 
 To rebuild a specific image run:

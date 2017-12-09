@@ -4,7 +4,7 @@
       :url="url"
       :params="params"
       @success="success" 
-      @failed="failed"
+      @error="error"
       class="uploader"
       ref="uploader"
     >
@@ -23,8 +23,8 @@
       success (...args) {
         this.$emit('success', ...args);
       },
-      failed (...args) {
-        this.$emit('failed', ...args);
+      error (...args) {
+        this.$emit('error', args[1]);
       }
     }
   }

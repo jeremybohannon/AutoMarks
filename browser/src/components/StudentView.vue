@@ -9,7 +9,8 @@
     <upload-file 
         :url="requestUrl"
         @success="success"
-        descriptor="assignment" 
+        @error="error"
+        :descriptor="assignment.id"
     />
     
     <div v-if="syntaxError" class="syntaxError">
@@ -65,6 +66,9 @@ export default {
   methods: {
       success (vueTransmitFile, responseData) {
           this.setAssignment(responseData.cases)
+      },
+      error (message) {
+          console.error(message)
       }
   },
   mounted () {

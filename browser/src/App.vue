@@ -1,8 +1,8 @@
 <template>
 <div id="wrapper">
   <loading v-if="loading"/>
-  <professor-view v-if="!loading && !studentId" />
-  <student-view v-if="!loading && studentId" 
+  <professor-view v-if="!loading && !studentId || !assignmentId" />
+  <student-view v-if="!loading && studentId && assignmentId" 
     :assignment = "assignment" 
     :setAssignment="setAssignment"
     :studentId="studentId"/>
@@ -39,19 +39,15 @@ export default {
     this.studentId = getParameterByName('student')
     this.assignmentId = getParameterByName('assignmentId')
   
-    if(this.studentId){
-      try {
-        const res = await fetch(
-          `/api/v1/assignment/${this.assignmentId}`
-        )
-        const data = await res.json()
-        if (data.error) throw data.error
-        this.assignment = data
-      } catch (error) {
-        console.log('ERROR', error)
-      } finally {
+    if(this.studentId && this.assignmentId){
+      fetch(`/api/v1/assignment/${this.assignmentId}`, {
+        method: 'GET'
+      }).then(response => {
+        return response.json()
+      }).then(json => {
+        this.assignment = json
         this.loading = false
-      }
+      })
     }
   },
   methods: {

@@ -1,7 +1,7 @@
 <template>
   <div class="professor-view-wrapper">
     <span class="title">Automarks</span>
-    <input v-model="title" type="text" class="block" name="name" placeholder="Assignment Name">
+    <input v-model="name" type="text" class="block" name="name" placeholder="Assignment Name">
     <assignment-description @input="output"/>
     <upload-file descriptor="Test File" />
     <div class="widthBlock">
@@ -17,14 +17,28 @@ import AssignmentDescription from './AssignmentDescription'
 export default {
 name: 'ProfessorView',
   data: () => ({
-    title: '',
+    name: '',
     description: '',
     file: undefined
   }),
   props: ['assignmentName'],
   methods: {
     submit () {
-      console.log(this.title, this.description, this.file)
+      var data = new FormData()
+      data.append( "file", this.file )
+      data.append( "name", this.name )
+      data.append( "description", this.description )
+
+      fetch(`/api/v1/assignment/create/80082000`, {
+        method: 'POST',
+        body: data
+      }).then(response => {
+        return response.json()
+      }).then(json => {
+        console.log(json)
+      }).catch(err => {
+        console.log(err)
+      });
     },
     output (content) {
       this.description = content
@@ -35,8 +49,8 @@ name: 'ProfessorView',
       'assignment-description': AssignmentDescription
   },
   mounted(){
-    this.$on('file', function(value){
-        console.log(value.name)
+    this.$on('file', function(file){
+        this.file = file
     });
   }
 }

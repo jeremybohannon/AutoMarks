@@ -1,8 +1,8 @@
 <template>
   <vue-transmit 
       :clickable="true"
-      :url="url"
-      :params="params"
+      :url="url || 'invalid'"
+      :params="params || {}"
       @success="success" 
       @error="error"
       class="uploader"
@@ -16,6 +16,8 @@
 </template>
   
 <script>
+  import xhook from 'xhook'
+
   export default {
     name: 'uploadfile',
     props: ['descriptor', 'url', 'params'],
@@ -26,6 +28,13 @@
       error (...args) {
         this.$emit('error', args[1]);
       }
+    },
+    mounted () {
+      xhook.before((request) => {
+        if (request.url === 'invalid') {
+          this.$emit('file', request.body.fd.get('file'))
+        }
+      })
     }
   }
 </script>

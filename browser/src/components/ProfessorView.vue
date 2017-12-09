@@ -2,8 +2,8 @@
   <div class="professor-view-wrapper">
     <span class="title">Automarks</span>
     <input v-model="name" type="text" class="block" name="name" placeholder="Assignment Name">
-    <assignment-description @input="output"/>
-    <upload-file descriptor="Test File" />
+    <assignment-description @input="output" />
+    <upload-file descriptor="Test File" @file="receiveFile" />
     <div class="widthBlock">
       <button v-on:click="submit" class="submit" >Submit</button>
     </div>
@@ -25,6 +25,7 @@ name: 'ProfessorView',
   methods: {
     submit () {
       var data = new FormData()
+      
       data.append( "file", this.file )
       data.append( "name", this.name )
       data.append( "description", this.description )
@@ -42,17 +43,15 @@ name: 'ProfessorView',
     },
     output (content) {
       this.description = content
+    },
+    receiveFile (file) {
+      this.file = file
     }
   },
   components: {
       'upload-file': UploadFile,
       'assignment-description': AssignmentDescription
   },
-  mounted(){
-    this.$on('file', function(file){
-        this.file = file
-    });
-  }
 }
 </script>
 

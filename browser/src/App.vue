@@ -48,6 +48,8 @@ export default {
         this.assignment = json
         this.loading = false
       })
+    } else {
+        this.loading = false      
     }
   },
   methods: {

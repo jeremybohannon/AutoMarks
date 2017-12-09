@@ -243,6 +243,7 @@ public class AssignmentController {
 
             client.close();
             cases = result.toString();
+            storageService.deleteFile(specFile.getOriginalFilename());
         } catch(JsonParseException e) {
             e.printStackTrace();
         } catch (IOException e) {

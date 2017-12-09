@@ -14,6 +14,8 @@ services:
     environment: 
       - STORAGE_HOST=http://storage_service:8080
       - GRADER_HOST=http://grader:3000      
+    env_file: 
+      - ./private.env
     links: 
       - storage_service
       - grader

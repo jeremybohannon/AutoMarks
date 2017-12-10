@@ -1,5 +1,6 @@
 <template>
   <div class="professor-view-wrapper">
+    <loading v-if="loading" floating="true" />
     <span class="title">Automarks</span>
     <input v-model="name" type="text" class="block" name="name" placeholder="Assignment Name">
     <assignment-description @input="output" ref="descrip" />
@@ -11,8 +12,9 @@
 </template>
   
 <script>
-import UploadFile from './UploadFile'
 import AssignmentDescription from './AssignmentDescription'
+import Loading from './Loading'
+import UploadFile from './UploadFile'
 import xhr from 'xhr'
 
 export default {
@@ -20,7 +22,8 @@ name: 'ProfessorView',
   data: () => ({
     name: '',
     description: '',
-    file: undefined
+    file: undefined,
+    loading: false
   }),
   props: ['assignmentName'],
   computed: {
@@ -40,6 +43,7 @@ name: 'ProfessorView',
       data.append('file', this.file)
       data.append('name', this.name)
       data.append('description', this.description)
+      this.loading = true
 
       xhr({
         body: data,
@@ -47,10 +51,10 @@ name: 'ProfessorView',
         method: 'POST'
       }, (err, resp, body) => {
         if (err) return console.log(error)
-        alert('Assignment created!')
         this.file = null
         this.name = ''
         this.description = ''
+        this.loading = false
         this.$refs.descrip.clear()
       })
     },
@@ -63,7 +67,8 @@ name: 'ProfessorView',
   },
   components: {
       'upload-file': UploadFile,
-      'assignment-description': AssignmentDescription
+      'assignment-description': AssignmentDescription,
+      'loading': Loading
   }
 }
 </script>

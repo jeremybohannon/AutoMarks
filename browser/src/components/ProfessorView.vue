@@ -1,18 +1,20 @@
 <template>
   <div class="professor-view-wrapper">
+    <loading v-if="loading" floating="true" />
     <span class="title">Automarks</span>
     <input v-model="name" type="text" class="block" name="name" placeholder="Assignment Name">
     <assignment-description @input="output" ref="descrip" />
-    <upload-file descriptor="Test File" @file="receiveFile" />
+    <upload-file :descriptor="descriptor" @file="receiveFile" />
     <div class="widthBlock">
-      <button v-on:click="submit" class="submit" >Submit</button>
+      <button v-on:click="submit" class="submit" :disabled="disabled">Submit</button>
     </div>
   </div>
 </template>
   
 <script>
-import UploadFile from './UploadFile'
 import AssignmentDescription from './AssignmentDescription'
+import Loading from './Loading'
+import UploadFile from './UploadFile'
 import xhr from 'xhr'
 
 export default {
@@ -20,16 +22,28 @@ name: 'ProfessorView',
   data: () => ({
     name: '',
     description: '',
-    file: undefined
+    file: undefined,
+    loading: false
   }),
   props: ['assignmentName'],
+  computed: {
+    descriptor () {
+      return this.file ? this.file.name : 'Click or Drag to Upload Test File'
+    },
+    disabled () {
+      return !this.file || !this.name || !this.description
+    }
+  },
   methods: {
     submit () {
+      // do not submit without all inputs
+      if (this.disabled) return
+
       var data = new FormData()
-      
       data.append('file', this.file)
       data.append('name', this.name)
       data.append('description', this.description)
+      this.loading = true
 
       xhr({
         body: data,
@@ -42,6 +56,7 @@ name: 'ProfessorView',
         this.file = null
         this.name = ''
         this.description = ''
+        this.loading = false
         this.$refs.descrip.clear()
       })
     },
@@ -54,7 +69,8 @@ name: 'ProfessorView',
   },
   components: {
       'upload-file': UploadFile,
-      'assignment-description': AssignmentDescription
+      'assignment-description': AssignmentDescription,
+      'loading': Loading
   }
 }
 </script>
@@ -98,6 +114,7 @@ input[name="name"] {
 }
 
 .submit {
+  cursor: pointer;
   width: 30%;
   padding: 15px 15px;
   margin-bottom: 25px;
@@ -109,7 +126,12 @@ input[name="name"] {
   color: grey;
 }
 
-.submit:active {
+.submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.submit:enabled:active {
   background: #dedede;
 }
 

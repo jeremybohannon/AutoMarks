@@ -9,7 +9,7 @@
       ref="uploader"
     >
     <h1>
-      Click or Drag to upload {{ descriptor }}
+      {{ descriptor }}
       <i class="fa fa-cloud-upload" aria-hidden="true"></i>
     </h1>
   </vue-transmit>  

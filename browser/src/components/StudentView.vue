@@ -9,7 +9,7 @@
     <upload-file 
         :url="requestUrl"
         @success="success"
-        @error="error"
+        @error="onError"
         :descriptor="'Click or Drag to Upload ' + assignment.id"
     />
     
@@ -67,7 +67,7 @@ export default {
       success (vueTransmitFile, responseData) {
           this.setAssignment(responseData.cases)
       },
-      error (message) {
+      onError (message) {
           console.error(message)
       }
   },

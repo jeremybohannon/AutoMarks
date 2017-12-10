@@ -10,7 +10,7 @@
         :url="requestUrl"
         @success="success"
         @error="error"
-        :descriptor="assignment.id"
+        :descriptor="assignment.assignmentName"
     />
     
     <div v-if="syntaxError" class="syntaxError">
@@ -45,7 +45,7 @@ import UploadFile from './UploadFile'
 export default {
   name: 'StudentView',
   data: () => ({
-    error: "Syntax Error",
+    errorMessage: "",
     syntaxError: false,
     description: ''
   }), 
@@ -68,6 +68,7 @@ export default {
           this.setAssignment(responseData.cases)
       },
       error (message) {
+          this.errorMessage = message
           console.error(message)
       }
   },

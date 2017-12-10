@@ -37,6 +37,7 @@ name: 'ProfessorView',
         method: 'POST'
       }, (err, resp, body) => {
         if (err) return console.log(error)
+        console.log(`Assignment Id: ${JSON.parse(body).assignmentId}`)
         alert('Assignment created!')
         this.file = null
         this.name = ''

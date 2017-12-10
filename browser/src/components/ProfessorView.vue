@@ -3,9 +3,9 @@
     <span class="title">Automarks</span>
     <input v-model="name" type="text" class="block" name="name" placeholder="Assignment Name">
     <assignment-description @input="output" ref="descrip" />
-    <upload-file descriptor="Test File" @file="receiveFile" />
+    <upload-file :descriptor="descriptor" @file="receiveFile" />
     <div class="widthBlock">
-      <button v-on:click="submit" class="submit" >Submit</button>
+      <button v-on:click="submit" class="submit" :disabled="disabled">Submit</button>
     </div>
   </div>
 </template>
@@ -23,10 +23,20 @@ name: 'ProfessorView',
     file: undefined
   }),
   props: ['assignmentName'],
+  computed: {
+    descriptor () {
+      return this.file ? this.file.name : 'Click or Drag to Upload Test File'
+    },
+    disabled () {
+      return !this.file || !this.name || !this.description
+    }
+  },
   methods: {
     submit () {
+      // do not submit without all inputs
+      if (this.disabled) return
+
       var data = new FormData()
-      
       data.append('file', this.file)
       data.append('name', this.name)
       data.append('description', this.description)
@@ -97,6 +107,7 @@ input[name="name"] {
 }
 
 .submit {
+  cursor: pointer;
   width: 30%;
   padding: 15px 15px;
   margin-bottom: 25px;
@@ -108,7 +119,12 @@ input[name="name"] {
   color: grey;
 }
 
-.submit:active {
+.submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.submit:enabled:active {
   background: #dedede;
 }
 

@@ -10,7 +10,7 @@
         :url="requestUrl"
         @success="success"
         @error="error"
-        :descriptor="assignment.id"
+        :descriptor="'Click or Drag to Upload ' + assignment.id"
     />
     
     <div v-if="syntaxError" class="syntaxError">

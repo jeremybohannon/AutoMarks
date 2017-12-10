@@ -13,6 +13,7 @@
 <script>
 import UploadFile from './UploadFile'
 import AssignmentDescription from './AssignmentDescription'
+import xhr from 'xhr'
 
 export default {
 name: 'ProfessorView',
@@ -26,20 +27,18 @@ name: 'ProfessorView',
     submit () {
       var data = new FormData()
       
-      data.append( "file", this.file )
-      data.append( "name", this.name )
-      data.append( "description", this.description )
+      data.append('file', this.file)
+      data.append('name', this.name)
+      data.append('description', this.description)
 
-      fetch(`/api/v1/assignment/create/80082000`, {
-        method: 'POST',
-        body: data
-      }).then(response => {
-        return response.json()
-      }).then(json => {
-        console.log(json)
-      }).catch(err => {
-        console.log(err)
-      });
+      xhr({
+        body: data,
+        uri: `/api/v1/assignment/create/80082000`,
+        method: 'POST'
+      }, (err, resp, body) => {
+        if (err) return console.log(error)
+        console.log(JSON.parse(body))
+      })
     },
     output (content) {
       this.description = content

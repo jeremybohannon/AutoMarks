@@ -17,7 +17,8 @@
     "serve": "^6.4.0",
     "vue": "^2.4.2",
     "vue-transmit": "^6.0.7",
-    "xhook": "^1.4.4"
+    "xhook": "^1.4.4",
+    "xhr": "^2.4.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

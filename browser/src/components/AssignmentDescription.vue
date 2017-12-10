@@ -43,6 +43,9 @@
       },
       handleInput (event) {
         this.$emit('input', event.target.value)
+      },
+      clear () {
+        this.rawContent = ''
       }
     },
     computed: {

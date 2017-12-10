@@ -2,7 +2,7 @@
   <div class="professor-view-wrapper">
     <span class="title">Automarks</span>
     <input v-model="name" type="text" class="block" name="name" placeholder="Assignment Name">
-    <assignment-description @input="output" />
+    <assignment-description @input="output" ref="descrip" />
     <upload-file descriptor="Test File" @file="receiveFile" />
     <div class="widthBlock">
       <button v-on:click="submit" class="submit" >Submit</button>
@@ -37,7 +37,11 @@ name: 'ProfessorView',
         method: 'POST'
       }, (err, resp, body) => {
         if (err) return console.log(error)
-        console.log(JSON.parse(body))
+        alert('Assignment created!')
+        this.file = null
+        this.name = ''
+        this.description = ''
+        this.$refs.descrip.clear()
       })
     },
     output (content) {
@@ -45,12 +49,12 @@ name: 'ProfessorView',
     },
     receiveFile (file) {
       this.file = file
-    }
+    },
   },
   components: {
       'upload-file': UploadFile,
       'assignment-description': AssignmentDescription
-  },
+  }
 }
 </script>
 

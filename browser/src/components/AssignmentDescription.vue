@@ -27,19 +27,23 @@
     name: 'AssignmentDescription',
     props: ['isStudent', 'content'],
     data: () => ({
-      placeholder: `# Add an assignment description`,
+      placeholder: `# Write a markdown description here.
+      `,
       inPreview: false,
       rawContent: ''
     }),
     methods: {
       togglePreview () {
         this.inPreview = !this.inPreview
-        setTimeout(() => {
-          highlight.highlightBlock(this.$refs.code)
-        },50)
-        setTimeout(() => {
-          highlight.highlightBlock(this.$refs.code)
-        },1000)
+        setTimeout(() => this.highlight())
+        setTimeout(() => this.highlight(), 100)
+        setTimeout(() => this.highlight(), 1000)
+      },
+      highlight () {
+        if (!this.$refs.code) return
+        Array.from(this.$refs.code.querySelectorAll('pre code')).forEach(
+          element => highlight.highlightBlock(element)
+        )
       },
       handleInput (event) {
         this.$emit('input', event.target.value)

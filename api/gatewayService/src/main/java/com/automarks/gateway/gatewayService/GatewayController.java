@@ -79,7 +79,7 @@ public class GatewayController {
 
 
     @RequestMapping(value = "/assignment/create/{proId}", method = RequestMethod.POST, produces = "application/json")
-    public String createAssignment(@PathVariable String proId,@RequestParam("name") String name, @RequestParam("description") String descript, @RequestParam("file") MultipartFile specFile){
+    public String createAssignment(@PathVariable String proId, @RequestParam("name") String name, @RequestParam("description") String descript, @RequestParam("file") MultipartFile specFile){
         //spec file
         String responseString = "";
         try {

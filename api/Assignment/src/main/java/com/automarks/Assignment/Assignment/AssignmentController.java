@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -210,6 +212,45 @@ public class AssignmentController {
 
 
         //call canvas api... and create a new assignment in our canvas sand box class
+        String canvasResponse = "";
+        try {
+
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost request = new HttpPost("https://canvas.instructure.com/api/v1/courses/73010000000073623/assignments");
+
+            StringEntity params =new StringEntity("{\n" +
+                    "    \"assignment\": {\n" +
+                    "        \"name\": \""+ assignment.getAssignmentName() +"\",\n" +
+                    "        \"description\": \"" + assignment.getDescription() + "<br><p><iframe style=\\\"height: 200vh; min-height: 25rem;\\\" src=\\\"http://localhost:8080/?student=800827630&assignmentId="+ assignment.getId() + "\\\" width=\\\"100%\\\" height=\\\"150\\\"></iframe></p>\",\n" +
+                    "        \"published\": true,\n" +
+                    "        \"grading_type\": \"points\",\n" +
+                    "        \"due_at\": \"2017-12-19T04:59:59+00:00\",\n" +
+                    "\t\t\"unlock_at\": \"2017-12-11T00:00:00+00:00\",\n" +
+                    "\t\t\"lock_at\": \"2017-12-19T04:59:59+00:00\",\n" +
+                    "\t\t\"points_possible\": 100\n" +
+                    "    }\n" +
+                    "}");
+            request.addHeader("Authorization", "Bearer " + System.getenv("CANVAS_TOKEN"));
+            request.addHeader("Content-Type", "application/json");
+            request.setEntity(params);
+            HttpResponse response = client.execute(request);
+
+            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+            StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+
+            client.close();
+            canvasResponse = result.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
 
 
         //create assignment and store into db

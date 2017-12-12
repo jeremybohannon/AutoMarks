@@ -1,21 +1,50 @@
 version: '3'
 services:
-  # api_gateway:
-  #   build: ./api/gatewayService
-  #   ports:
-  #     - "8070:8080"
+  gateway_service:
+    build: ./api/gatewayService
+    environment: 
+      - ASSIGNMENT_HOST=http://assignment_service:8080
+    links: 
+      - assignment_service
+    ports:
+      - "6000:8080"
+      
+  assignment_service:
+    build: ./api/Assignment
+    environment: 
+      - STORAGE_HOST=http://storage_service:8080
+      - GRADER_HOST=http://grader:3000      
+    env_file: 
+      - ./private.env
+    links: 
+      - storage_service
+      - grader
+
+  storage_service:
+    build: ./api/storageService
+    environment: 
+      - MONGO_HOST=mongo
+    ports:
+      - "4000:8080"
+    links:
+      - mongo
 
   browser:
     build: ./browser
-    links:
-      - grader
     ports:
       - "8080:80"
+    links: 
+      - gateway_service
 
   grader:
     build: ./grader
     privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  
+  mongo:
+    image: mongo
+    volumes: 
+      - ./mongo:/data/db
     ports:
-      - "3000:3000"
+       - "5000:27017"

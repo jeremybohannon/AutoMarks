@@ -22,6 +22,18 @@ app.use(async function (ctx, next) {
         await fs.readFile('./artifacts/test.spec.rb')
     ).toString('base64')
     ctx.state.source = Buffer.from('').toString('base64')
+  } else if (ctx.request.method === 'POST') {
+    console.log(ctx.request.body)
+    const buffers = await Promise.all([
+      fs.readFile(ctx.request.body.files.spec.path),
+      ctx.request.body.files.source ? fs.readFile(ctx.request.body.files.source.path) : Buffer.from('')
+    ])
+    const [ spec, source ] = buffers.map(
+      buffer => Buffer.from(buffer).toString('base64')
+    )
+    ctx.state.skip = true
+    ctx.state.spec = spec
+    ctx.state.source = source
   }
   return next()
 })

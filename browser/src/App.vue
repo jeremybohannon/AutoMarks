@@ -1,12 +1,17 @@
 <template>
 <div id="wrapper">
   <loading v-if="loading"/>
-  <student-view v-if="!loading" :assignment = "assignment" :setAssignment="setAssignment"/>
+  <professor-view v-if="!loading && !studentId || !assignmentId" />
+  <student-view v-if="!loading && studentId && assignmentId" 
+    :assignment = "assignment" 
+    :setAssignment="setAssignment"
+    :studentId="studentId"/>
 </div>
 </template>
 
 <script>
 import StudentView from './components/StudentView'
+import ProfessorView from './components/ProfessorView'
 import Loading from './components/Loading'
 import * as highlight from 'highlight.js'
 
@@ -15,10 +20,12 @@ export default {
   data: () => {
     return {
       loading: true,
+      studentId: null,
+      assignmentId: null,
       assignment: {}
     }
   },
-  mounted(){
+  async mounted () {
     function getParameterByName(name, url) {
       if (!url) url = window.location.href;
       name = name.replace(/[\[\]]/g, "\\$&");
@@ -29,29 +36,30 @@ export default {
       return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
-    const id = getParameterByName('id')
-    const user = getParameterByName('user')
+    this.studentId = getParameterByName('student')
+    this.assignmentId = getParameterByName('assignmentId')
   
-    fetch(`/api`, {
-        method: 'get'
+    if(this.studentId && this.assignmentId){
+      fetch(`/api/v1/assignment/${this.assignmentId}`, {
+        method: 'GET'
       }).then(response => {
         return response.json()
       }).then(json => {
         this.assignment = json
         this.loading = false
-      }).catch(err => {
-        console.log(err)
-      });
+      })
+    } else {
+        this.loading = false      
+    }
   },
   methods: {
     setAssignment(cases) {
-      console.log(cases)
-
-      this.assignment.results = cases
+      this.assignment.cases = cases
     },
   },
   components: {
       'student-view': StudentView,
+      'professor-view': ProfessorView,
       'loading': Loading
   }
 }
@@ -69,5 +77,6 @@ export default {
     width: 100%;
     background: #f5f5f5;
     border: 1px solid #C7CDD1;
+    min-width: 700px;
   }
 </style>

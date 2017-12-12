@@ -1,52 +1,35 @@
 <template>
   <div class="student-view-wrapper">
-    <div class="block assignmentDescription markdown-body" v-html="description">
-      
-    </div>
     
-    <upload-file :assignmentName="assignment.name" />
+    <assignment-description 
+        :isStudent="true"
+        :content="description"
+    ></assignment-description>
+    
+    <upload-file 
+        :url="requestUrl"
+        @success="success"
+        @error="error"
+        :descriptor="'Click or Drag to Upload ' + assignment.assignmentName"
+    />
     
     <div v-if="syntaxError" class="syntaxError">
         <span>{{ error }}</span>
     </div>
     <div class="block testCases">
         <ul class="testCasesList">
-            <li v-for="testCase in assignment.results" v-bind:key="testCase.case">
-                <div class="needsAName">
-                    <!-- <i v-if="testCase.pass" class="fa fa-clock-o" aria-hidden="true"></i> -->
-                    <i v-if="testCase.pass" class="fa fa-check-circle" aria-hidden="true"></i>
-                    <i v-if="!testCase.pass" class="fa fa-times-circle" aria-hidden="true"></i>
-                    <p class="markdown-body" v-html="$options.filters.markdown(testCase.case)">
+            <li v-for="testCase in assignment.cases" v-bind:key="testCase.text">
+                <div class="testCaseRow">
+                    <i v-if="testCase.passed" class="fa fa-check-circle" aria-hidden="true"></i>
+                    <i v-else class="fa fa-times-circle" aria-hidden="true"></i>
+                    <p class="markdown-body" v-html="$options.filters.markdown(testCase.text)">
                     </p>
                 </div>
-                <p v-if="testCase.pass">Passed</p>
-                <p v-if="!testCase.pass">Failed</p>
+                <p v-if="testCase.passed">Passed</p>
+                <p v-else>Failed</p>
             </li>
         </ul>
     </div>
-
-    <textarea ref="markdown"
-        style="visibility: 'hidden'; width: 0; height: 0"
-    >
-## Description
-
-For this assignment we will learn how to write basic functions in `Ruby`
-
-A `function` can take multiple `inputs` and return one `output`.
-Functions consist of a `signature` which is comprised of a `method name` and input `parameters`, and a `method body`.
-
-### Example
-```rb 
-def add(a, b)
-  a + b
-end
-```
-
-### Requirements
-
-Write `3` functions in `Ruby` that `subtract`, `multiply`, and `divide` two numbers. 
-These functions should maintain the respective method names, the method body is entirely up to you.
-    </textarea>
   </div>
 </template>
 
@@ -54,35 +37,47 @@ These functions should maintain the respective method names, the method body is 
 import 'github-markdown-css/github-markdown.css'
 import 'highlight.js/styles/github.css'
 
-import UploadFile from './UploadFile'
-import marked from 'marked'
 import * as highlight from 'highlight.js'
+import AssignmentDescription from './AssignmentDescription'
+import marked from 'marked'
+import UploadFile from './UploadFile'
 
 export default {
   name: 'StudentView',
-  data: () => {
-    return {
-        error: "Syntax Error",
-        syntaxError: false,
-        description: ''
-    }
-  }, 
-  props: ['assignment', 'setAssignment'],
+  data: () => ({
+    errorMessage: "",
+    syntaxError: false,
+    description: ''
+  }), 
+  props: [
+    'assignment', 
+    'setAssignment', 
+    'studentId'
+  ],
   components: {
-      'upload-file': UploadFile
+    'upload-file': UploadFile,
+    'assignment-description': AssignmentDescription
   },
-  mounted(){
-    this.$on('error', function(value){
-        this.syntaxError = value
-    });
-    this.$on('results', function(value){
-        this.setAssignment(value)
-    });
-
-    this.description = marked(this.$refs.markdown.value)
+  computed: {
+    requestUrl () {
+        return `/api/v1/assignment/${this.assignment.id}/submission/${this.studentId}`
+    }
+  },
+  methods: {
+      success (vueTransmitFile, responseData) {
+          this.setAssignment(responseData.cases)
+      },
+      error (message) {
+          this.errorMessage = message
+          console.error(message)
+      }
+  },
+  mounted () {
+    this.description = this.assignment.description
     
     highlight.initHighlightingOnLoad()
-  }, updated(){
+  }, 
+  updated () {
     highlight.initHighlighting()
   }
 }
@@ -132,35 +127,15 @@ export default {
     color: #f5f5f5;
 }
 
-.needsAName {
+.testCaseRow {
     display: flex;
     width: 85%;
 }
 
-.needsAName p:not(:first-child) {
+.testCaseRow p:not(:first-child) {
     margin-left: 15px;
 }
 
-.block {
-    margin-top: 25px;
-    margin-bottom: 25px;
-    width: 90%;
-    max-width: 1000px;
-    padding: 15px 15px;
-    background: #FFF;
-    border: 1px solid #C7CDD1;
-    border-radius: 10px 10px; 
-}
-
-.assignmentDescription {
-    text-align: justify;
-}
-.assignmentDescription span {
-    font-size: 1.0em;
-    color: grey;
-    font-weight: 100;
-    font-family: helvetica;
-}
 .student-view-wrapper {
     width: 100%;
     display: flex;
@@ -195,5 +170,15 @@ export default {
     font-weight: 100;
     font-family: helvetica;
     color: #FFF;
+}
+.block {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    width: 90%;
+    max-width: 1000px;
+    padding: 15px 15px;
+    background: #FFF;
+    border: 1px solid #C7CDD1;
+    border-radius: 10px 10px; 
 }
 </style>

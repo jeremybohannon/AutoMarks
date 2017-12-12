@@ -21,8 +21,8 @@ public class Assignment {
         this.assignmentName = assignmentName;
     }
 
-    public void addCase(int id, String text, double points){
-        cases.add(new Case(id, text, points));
+    public void addCase(String text, double points, boolean passed){
+        cases.add(new Case(text, points, passed));
     }
 
     public long getId() {
@@ -55,5 +55,13 @@ public class Assignment {
 
     public void setCases(ArrayList<Case> cases) {
         this.cases = cases;
+    }
+
+    public String getAssignmentName() {
+        return assignmentName;
+    }
+
+    public void setAssignmentName(String assignmentName) {
+        this.assignmentName = assignmentName;
     }
 }

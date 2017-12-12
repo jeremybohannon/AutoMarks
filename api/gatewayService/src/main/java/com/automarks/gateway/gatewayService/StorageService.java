@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class StorageService {
 
-    private final Path rootLocation = Paths.get("temp");
+    private final Path rootLocation = Paths.get("gatewayTemp");
 
     public void store(MultipartFile file){
         try {
@@ -60,6 +60,17 @@ public class StorageService {
 
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
+    }
+
+    public void deleteFile(String fileName) {
+        File file = getFile(fileName);
+        if(file.exists()){
+            if(file.delete()){
+                System.out.println("File deleted successfully");
+            }else{
+                System.out.println("Fail to delete file");
+            }
+        }
     }
 
     public void init() {

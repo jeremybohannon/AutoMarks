@@ -1,4 +1,4 @@
-package com.automarks.Assignment.Assignment;
+package com.automarks.storage.storageService;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.Resource;
@@ -19,13 +19,12 @@ import java.nio.file.Paths;
 @Service
 public class StorageService {
 
-    private final Path rootLocation = Paths.get("assignmentTemp");
+    public final Path rootLocation = Paths.get("storageTemp");
 
     public void store(MultipartFile file){
         try {
             Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException("FAIL!");
         }
     }
@@ -43,6 +42,21 @@ public class StorageService {
         }
         return getFile(fileName);
     }
+
+    public boolean isFile(String filename){
+        try{
+            Path f = rootLocation.resolve(filename);
+            File file = new File(String.valueOf(f));
+            if(file.exists() || file.canRead()){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            return false;
+        }
+    }
+
 
     public File getFile(String filename){
         try{

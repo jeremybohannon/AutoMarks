@@ -1,26 +1,17 @@
 package com.automarks.storage.storageService;
 
 public class Case {
-    int id;
     String text;
     double pointValue;
-
+    boolean passed;
 
     public Case() {
     }
 
-    public Case(int id, String text, double pointValue) {
-        this.id = id;
+    public Case(String text, double pointValue, boolean passed) {
         this.text = text;
         this.pointValue = pointValue;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.passed = passed;
     }
 
     public String getText() {
@@ -38,4 +29,13 @@ public class Case {
     public void setPointValue(double pointValue) {
         this.pointValue = pointValue;
     }
+
+    public boolean isPassed() {
+        return passed;
+    }
+
+    public void setPassed(boolean passed) {
+        this.passed = passed;
+    }
 }
+

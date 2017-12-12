@@ -76,7 +76,11 @@ export default class AutoMarks {
     ctx.response.body = {
       assignment: ctx.request.body.fields && ctx.request.body.fields.assignment,
       user: ctx.request.body.fields && ctx.request.body.fields.user,
-      results
+      cases: results.map(result => ({
+        passed: result.pass,
+        text: result.case,
+        pointValue: 1.0
+      }))
     }
     // next middleware
     return next()

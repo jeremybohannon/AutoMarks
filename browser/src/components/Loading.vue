@@ -1,12 +1,20 @@
 <template>
-  <div class="loading-wrapper">
+  <div :class="'loading-wrapper' + this.floatingClass">
     <i class="fa fa-spinner rotating" aria-hidden="true"></i>Loading...
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Loading'
+  name: 'Loading',
+  props: [
+      'floating'
+  ],
+  computed: {
+      floatingClass () {
+          return this.floating ? ' floating ' : ''
+      }
+  }
 }
 </script>
 
@@ -22,6 +30,17 @@ export default {
     color: grey;
     font-weight: 100;
     font-family: helvetica;
+}
+
+.floating {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
 }
 
 .fa-spinner {

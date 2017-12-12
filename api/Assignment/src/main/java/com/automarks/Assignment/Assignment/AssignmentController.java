@@ -221,7 +221,7 @@ public class AssignmentController {
             StringEntity params =new StringEntity("{\n" +
                     "    \"assignment\": {\n" +
                     "        \"name\": \""+ assignment.getAssignmentName() +"\",\n" +
-                    "        \"description\": \"" + assignment.getDescription() + "<br><p><iframe style=\\\"height: 200vh; min-height: 25rem;\\\" src=\\\"http://localhost:8080/?student=800827630&assignmentId="+ assignment.getId() + "\\\" width=\\\"100%\\\" height=\\\"150\\\"></iframe></p>\",\n" +
+                    "        \"description\": \"<p><iframe style=\\\"height: 200vh; min-height: 25rem;\\\" src=\\\"http://localhost:8080/?student=800827630&assignmentId="+ assignment.getId() + "\\\" width=\\\"100%\\\" height=\\\"150\\\"></iframe></p>\",\n" +
                     "        \"published\": true,\n" +
                     "        \"grading_type\": \"points\",\n" +
                     "        \"due_at\": \"2017-12-19T04:59:59+00:00\",\n" +
